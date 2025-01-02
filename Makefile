@@ -1,5 +1,5 @@
 export VERSION := 0.27.0.0
-export GITHUB_REPO := lostb1t/jellyfin-plugin-streamyfin
+export GITHUB_REPO := streamyfin/jellyfin-plugin-streamyfin
 export FILE := streamyfin-${VERSION}.zip
 
 zip:
