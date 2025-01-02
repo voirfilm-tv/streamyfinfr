@@ -17,4 +17,4 @@ home:
           filterByGenre: [""Anime"", ""Comics""]";
 ```
 
-repo url: https://raw.githubusercontent.com/lostb1t/jellyfin-plugin-streamyfin/main/manifest.json
+repo url: https://raw.githubusercontent.com/streamyfin/jellyfin-plugin-streamyfin/main/manifest.json
