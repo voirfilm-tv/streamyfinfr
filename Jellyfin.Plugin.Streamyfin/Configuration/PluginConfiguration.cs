@@ -23,30 +23,54 @@ public class PluginConfiguration : BasePluginConfiguration
   {
 
     var Yaml = @"
-home:
-  sections:
-    Trending:
-      style: portrait
-      type: row 
-      items:
-        args: 
-          parentId: YOURCOLLECTIONID
-    Continue Watching:
-      style: landscape
-      type: row 
-      items:
-        args:
-          recursive: true
-          filters:
-            - isResumable
-    Suggestions:
-      style: portrait
-      type: row 
-      suggestions:
-        args:
-          type: 
-            - Movie
-            - Series
+# You can remove any settings you do not need configured.
+
+# Format Example
+# settingName:
+#   locked: true | false # if true, locks the setting from modification in app. Default false.
+#   value: value # Value you want the setting to be. Editor will give you type suggestion for a specific setting.
+
+# Example below shows all supported settings at this time.
+settings:
+  # Media Controls
+  forwardSkipTime:
+  rewindSkipTime: 
+
+  # Audio Controls
+  rememberAudioSelections:
+  
+  # Subtitles
+  subtitleMode:
+  rememberSubtitleSelections:
+  subtitleSize:
+  
+  # Other
+  autoRotate:
+  defaultVideoOrientation:
+  safeAreaInControlsEnabled:
+  showCustomMenuLinks:
+  hiddenLibraries:
+  disableHapticFeedback:
+  
+  # Downloads
+  downloadMethod:
+  remuxConcurrentLimit:
+  autoDownload:
+  optimizedVersionsServerUrl:
+
+  # Jellyseerr 
+  jellyseerrServerUrl:
+  
+  # Search
+  searchEngine:
+  marlinServerUrl:
+
+  # Popular Lists
+  usePopularPlugin:
+  mediaListCollectionIds:
+
+  # Misc.
+  libraryOptions:
 ";
 
     var deserializer = new DeserializerBuilder()

@@ -27,15 +27,8 @@ namespace Jellyfin.Plugin.Streamyfin.Configuration;
 
 public class Config
 {
-  //public Bla Wit { get; set; }
-  public Search? marlinSearch { get; set; }
-  public Home? home { get; set; }
-}
-
-public class Search
-{
-  public bool enabled { get; set; }
-  public string? url { get; set; }
+  // public Home? home { get; set; }
+  public Settings.Settings? settings { get; set; }
 }
 
 public class Home
