@@ -101,7 +101,7 @@ async function downloadAndHashFile(url, redirects = 5) {
 }
 
 function getMD5FromFile() {
-    const fileBuffer = fs.readFileSync(`${file}`);
+    const fileBuffer = fs.readFileSync(`./dist/${file}`);
     return crypto.createHash('md5').update(fileBuffer).digest('hex');
 }
 

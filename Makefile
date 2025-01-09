@@ -1,19 +1,20 @@
-export VERSION := 0.27.0.0
+export VERSION := 0.28.0.0
 export GITHUB_REPO := streamyfin/jellyfin-plugin-streamyfin
-export FILE := ./dist/streamyfin-${VERSION}.zip
+export FILE := streamyfin-${VERSION}.zip
 
 zip:
-	zip -r -j "${FILE}" Jellyfin.Plugin.Streamyfin/bin/Debug/net8.0/Jellyfin.Plugin.Streamyfin.dll packages/
+	mkdir -p ./dist
+	zip -r -j "./dist/${FILE}" Jellyfin.Plugin.Streamyfin/bin/Debug/net8.0/Jellyfin.Plugin.Streamyfin.dll packages/
 
 csum:
-	md5sum "${FILE}"
+	md5sum "./dist/${FILE}"
 
 create-tag:
 	git tag ${VERSION}
 	git push origin ${VERSION}
 
 create-gh-release:
-	gh release create ${VERSION} "${FILE}" --generate-notes --verify-tag
+	gh release create ${VERSION} "./dist/${FILE}" --generate-notes --verify-tag
 
 update-version:
 	node scripts/update-version.js
