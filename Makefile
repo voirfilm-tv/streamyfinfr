@@ -1,12 +1,12 @@
 export VERSION := 0.27.0.0
 export GITHUB_REPO := streamyfin/jellyfin-plugin-streamyfin
-export FILE := streamyfin-${VERSION}.zip
+export FILE := ./dist/streamyfin-${VERSION}.zip
 
 zip:
 	zip -r -j "${FILE}" Jellyfin.Plugin.Streamyfin/bin/Debug/net8.0/Jellyfin.Plugin.Streamyfin.dll packages/
 
 csum:
-	md5sum "${FILE} ""
+	md5sum "${FILE}"
 
 create-tag:
 	git tag ${VERSION}
