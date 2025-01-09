@@ -18,3 +18,9 @@ home:
 ```
 
 repo url: https://raw.githubusercontent.com/streamyfin/jellyfin-plugin-streamyfin/main/manifest.json
+
+### Create release
+
+- bump version in makefile
+- run `make release`
+- commit and push changes made release script
