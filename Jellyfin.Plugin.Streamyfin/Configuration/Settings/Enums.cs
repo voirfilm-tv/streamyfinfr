@@ -1,6 +1,10 @@
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json;
+
 namespace Jellyfin.Plugin.Streamyfin.Configuration;
 
 
+[JsonConverter(typeof(StringEnumConverter))]
 public enum DeviceProfile
 {
     Expo,
@@ -8,12 +12,14 @@ public enum DeviceProfile
     Old
 };
 
+[JsonConverter(typeof(StringEnumConverter))]
 public enum SearchEngine
 {
     Marlin,
     Jellyfin
 };
 
+[JsonConverter(typeof(StringEnumConverter))]
 public enum DownloadMethod
 {
     OPTIMIZED,
@@ -64,24 +70,28 @@ public enum OrientationLock {
     Unknown = 9,
 }
 
+[JsonConverter(typeof(StringEnumConverter))]
 public enum DisplayType
 {
     Row,
     List
 };
 
+[JsonConverter(typeof(StringEnumConverter))]
 public enum CardStyle
 {
     Compact,
     Detailed
 };
 
+[JsonConverter(typeof(StringEnumConverter))]
 public enum ImageStyle
 {
     Poster,
     Cover
 };
 
+[JsonConverter(typeof(StringEnumConverter))]
 public enum DownloadQuality
 {
     Original,

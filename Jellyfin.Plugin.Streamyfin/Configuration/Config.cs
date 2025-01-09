@@ -7,20 +7,12 @@
 #pragma warning disable CA1819
 #pragma warning disable CA1507
 
-using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Querying;
 using Jellyfin.Data.Enums;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using System.Xml.Serialization;
 using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
-//using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Converters;
-//using Newtonsoft.Json.Schema;
 using Newtonsoft.Json;
 
 namespace Jellyfin.Plugin.Streamyfin.Configuration;
