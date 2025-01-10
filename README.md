@@ -2,6 +2,8 @@
 
 > Allows centralised configuration of Streamyfin.
 
+### What is this?
+
 The Jellyfin Plugin for Streamyfin is a plugin you install into Jellyfin that hold all settings for the client Streamyfin. This allows you to syncronize settings accross all your users, like: 
 
 - Auto log in to Jellyseerr without the user having to do anythin
