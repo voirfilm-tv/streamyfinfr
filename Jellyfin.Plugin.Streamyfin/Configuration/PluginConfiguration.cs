@@ -21,7 +21,6 @@ public class PluginConfiguration : BasePluginConfiguration
 
   public PluginConfiguration()
   {
-
     var Yaml = @"
 # You can remove any settings you do not need configured.
 
@@ -32,45 +31,49 @@ public class PluginConfiguration : BasePluginConfiguration
 
 # Example below shows all supported settings at this time.
 settings:
-  # Media Controls
-  forwardSkipTime:
-  rewindSkipTime: 
-
-  # Audio Controls
-  rememberAudioSelections:
-  
-  # Subtitles
-  subtitleMode:
-  rememberSubtitleSelections:
-  subtitleSize:
-  
-  # Other
-  autoRotate:
-  defaultVideoOrientation:
-  safeAreaInControlsEnabled:
-  showCustomMenuLinks:
-  hiddenLibraries:
-  disableHapticFeedback:
-  
-  # Downloads
   downloadMethod:
-  remuxConcurrentLimit:
-  autoDownload:
-  optimizedVersionsServerUrl:
+    locked: true
+    value: REMUX
 
-  # Jellyseerr 
-  jellyseerrServerUrl:
+  # # Media Controls
+  # forwardSkipTime:
+  # rewindSkipTime: 
+
+  # # Audio Controls
+  # rememberAudioSelections:
   
-  # Search
-  searchEngine:
-  marlinServerUrl:
+  # # Subtitles
+  # subtitleMode:
+  # rememberSubtitleSelections:
+  # subtitleSize:
+  
+  # # Other
+  # autoRotate:
+  # defaultVideoOrientation:
+  # safeAreaInControlsEnabled:
+  # showCustomMenuLinks:
+  # hiddenLibraries:
+  # disableHapticFeedback:
+  
+  # # Downloads
+  # downloadMethod:
+  # remuxConcurrentLimit:
+  # autoDownload:
+  # optimizedVersionsServerUrl:
 
-  # Popular Lists
-  usePopularPlugin:
-  mediaListCollectionIds:
+  # # Jellyseerr 
+  # jellyseerrServerUrl:
+  
+  # # Search
+  # searchEngine:
+  # marlinServerUrl:
 
-  # Misc.
-  libraryOptions:
+  # # Popular Lists
+  # usePopularPlugin:
+  # mediaListCollectionIds:
+
+  # # Misc.
+  # libraryOptions:
 ";
 
     var deserializer = new DeserializerBuilder()
