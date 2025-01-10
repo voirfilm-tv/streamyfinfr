@@ -1,4 +1,4 @@
-export VERSION := 0.29.0.0
+export VERSION := 0.31.0.0
 export GITHUB_REPO := streamyfin/jellyfin-plugin-streamyfin
 export FILE := streamyfin-${VERSION}.zip
 
