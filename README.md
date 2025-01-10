@@ -1,5 +1,5 @@
 ## Companion app for [Streamyfin](https://github.com/fredrikburmester/streamyfin)
-
+t
 Allows centralised configuration of Streamyfin.
 
 Config example:
