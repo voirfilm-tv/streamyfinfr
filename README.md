@@ -9,7 +9,7 @@ The Jellyfin Plugin for Streamyfin is a plugin you install into Jellyfin that ho
 - Set download method and search provider
 - And more...
 
-Config example:
+### Config example
 
 ```yaml
 # You can remove any settings you do not need configured.
