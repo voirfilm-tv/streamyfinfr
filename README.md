@@ -1,6 +1,13 @@
 ## Companion app for [Streamyfin](https://github.com/fredrikburmester/streamyfin)
 
-Allows centralised configuration of Streamyfin.
+> Allows centralised configuration of Streamyfin.
+
+The Jellyfin Plugin for Streamyfin is a plugin you install into Jellyfin that hold all settings for the client Streamyfin. This allows you to syncronize settings accross all your users, like: 
+
+- Auto log in to Jellyseerr without the user having to do anythin
+- Choose the default languages 
+- Set download method and search provider
+- And more...
 
 Config example:
 
