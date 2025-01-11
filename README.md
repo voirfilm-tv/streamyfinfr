@@ -1,6 +1,6 @@
-## Companion app for [Streamyfin](https://github.com/fredrikburmester/streamyfin)
+## Companion plugin for [Streamyfin](https://github.com/fredrikburmester/streamyfin)
 
-> Allows centralised configuration of Streamyfin.
+> A plugin for Jellyfin that allows a centralised configuration of Streamyfin.
 
 ### What is this?
 
