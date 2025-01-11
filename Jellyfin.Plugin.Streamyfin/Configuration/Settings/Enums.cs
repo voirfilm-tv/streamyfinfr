@@ -73,22 +73,22 @@ public enum OrientationLock {
 [JsonConverter(typeof(StringEnumConverter))]
 public enum DisplayType
 {
-    Row,
-    List
+    row,
+    list
 };
 
 [JsonConverter(typeof(StringEnumConverter))]
 public enum CardStyle
 {
-    Compact,
-    Detailed
+    compact,
+    detailed
 };
 
 [JsonConverter(typeof(StringEnumConverter))]
 public enum ImageStyle
 {
-    Poster,
-    Cover
+    poster,
+    cover
 };
 
 [JsonConverter(typeof(StringEnumConverter))]

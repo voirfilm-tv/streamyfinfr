@@ -62,9 +62,16 @@ settings:
 
   # Misc.
   libraryOptions:
+    locked: false
+    value:
+      display: list | row
+      cardStyle: detailed | compact
+      imageStyle: cover | poster
+      showTitles: boolean
+      showStats: boolean
 ```
 
-#### Supported Streamyfin App configurations
+#### Supported Streamyfin App conxfigurations
 [Settings.cs](Jellyfin.Plugin.Streamyfin/Configuration/Settings/Settings.cs)
 
 repo url: https://raw.githubusercontent.com/streamyfin/jellyfin-plugin-streamyfin/main/manifest.json

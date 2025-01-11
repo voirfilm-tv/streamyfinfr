@@ -12,11 +12,11 @@ public class DownloadOption
 
 public class LibraryOptions
 {
-    public DisplayType display { get; set; } = DisplayType.List;
-    public CardStyle cardStyle { get; set; } = CardStyle.Detailed;
-    public ImageStyle imageStyle { get; set; } = ImageStyle.Cover;
-    public bool showTitles { get; set; }
-    public bool showStats { get; set; }
+    public DisplayType display { get; set; } = DisplayType.list;
+    public CardStyle cardStyle { get; set; } = CardStyle.detailed;
+    public ImageStyle imageStyle { get; set; } = ImageStyle.cover;
+    public bool showTitles { get; set; } = true;
+    public bool showStats { get; set; } = true;
 };
 
 public class Lockable<T>
