@@ -64,10 +64,12 @@ settings:
   libraryOptions:
 ```
 
-#### Supported Streamyfin App configurations
-[Settings.cs](Jellyfin.Plugin.Streamyfin/Configuration/Settings/Settings.cs)
+### Install Process
 
-repo url: https://raw.githubusercontent.com/streamyfin/jellyfin-plugin-streamyfin/main/manifest.json
+1. In jellyfin, go to dashboard -> plugins -> Repositories -> add and paste this link: https://raw.githubusercontent.com/streamyfin/jellyfin-plugin-streamyfin/main/manifest.json
+2. Go to Catalog and search for Streamyfin
+3. Click on it and install
+4. Restart Jellyfin
 
 ### Create release
 
