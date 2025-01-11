@@ -71,7 +71,7 @@ settings:
       showStats: boolean
 ```
 
-#### Supported Streamyfin App conxfigurations
+#### Supported Streamyfin App configurations
 [Settings.cs](Jellyfin.Plugin.Streamyfin/Configuration/Settings/Settings.cs)
 
 repo url: https://raw.githubusercontent.com/streamyfin/jellyfin-plugin-streamyfin/main/manifest.json
