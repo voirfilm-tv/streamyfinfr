@@ -22,8 +22,8 @@ public enum SearchEngine
 [JsonConverter(typeof(StringEnumConverter))]
 public enum DownloadMethod
 {
-    OPTIMIZED,
-    REMUX
+    optimized,
+    remux
 };
 
 public enum OrientationLock {
