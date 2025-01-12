@@ -2,6 +2,10 @@
 
 > A plugin for Jellyfin that allows a centralised configuration of Streamyfin.
 
+### Required minimum versions
+- Streamyfin App version: **0.25.0**
+- Plugin version: **0.33.0.0**
+
 ### What is this?
 
 The Jellyfin Plugin for Streamyfin is a plugin you install into Jellyfin that hold all settings for the client Streamyfin. This allows you to syncronize settings accross all your users, like: 
