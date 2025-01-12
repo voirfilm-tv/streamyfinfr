@@ -4,10 +4,11 @@ export FILE := streamyfin-${VERSION}.zip
 
 test:
 	printenv | grep VERSION
+	dotnet test
 
 zip:
 	mkdir -p ./dist
-	zip -r -j "./dist/${FILE}" Jellyfin.Plugin.Streamyfin/bin/Debug/net8.0/Jellyfin.Plugin.Streamyfin.dll packages/
+	zip -r -j "./dist/${FILE}" Jellyfin.Plugin.Streamyfin/bin/Release/net8.0/Jellyfin.Plugin.Streamyfin.dll packages/
 
 csum:
 	md5sum "./dist/${FILE}"
@@ -26,7 +27,7 @@ update-manifest:
 	node scripts/validate-and-update-manifest.js
 
 build: 
-	dotnet build
+	dotnet build --configuration Release
   
 push-manifest:
 	git commit -m 'new release' manifest.json

@@ -1,12 +1,7 @@
 #pragma warning disable CA2227
 #pragma warning disable CS0219
 
-using System;
-using System.Collections.Generic;
 using MediaBrowser.Model.Plugins;
-using System.Diagnostics.CodeAnalysis;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 namespace Jellyfin.Plugin.Streamyfin.Configuration;
 
@@ -18,6 +13,15 @@ public class PluginConfiguration : BasePluginConfiguration
 {
   //public string Yaml { get; set; }
   public Config Config { get; set; }
+  private readonly SerializationHelper _serializationHelper;
+
+  public PluginConfiguration(
+    SerializationHelper serializationHelper
+  )
+  {
+    _serializationHelper = serializationHelper;
+  }
+  
 
   public PluginConfiguration()
   {
@@ -76,13 +80,7 @@ settings:
   # libraryOptions:
 ";
 
-    var deserializer = new DeserializerBuilder()
-    //.ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitEmptyCollections)
-    .WithNamingConvention(CamelCaseNamingConvention.Instance)  // see height_in_inches in sample yml 
-    .Build();
-
-
-    Config = deserializer.Deserialize<Config>(Yaml);
+    Config = _serializationHelper?.Deserialize<Config>(Yaml);
 
     /*
     Config = new Config{
