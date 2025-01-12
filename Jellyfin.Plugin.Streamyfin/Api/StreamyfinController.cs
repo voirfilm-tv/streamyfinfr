@@ -1,6 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using Jellyfin.Data.Enums;
+using Jellyfin.Extensions.Json;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using MediaBrowser.Common.Api;
@@ -103,11 +106,19 @@ public class StreamyfinController : ControllerBase
   [HttpGet("config")]
   [Authorize]
   [ProducesResponseType(StatusCodes.Status200OK)]
-  public ActionResult<Config> getConfig(
+  public ActionResult getConfig(
   )
   {
+    var options = new JsonSerializerOptions(JsonDefaults.Options);
     var config = StreamyfinPlugin.Instance!.Configuration.Config;
-    return config;
+
+    // We need to ensure these are serialized first to their int values
+    options.Converters.Insert(0, new JsonNumberEnumConverter<SubtitlePlaybackMode>());
+    options.Converters.Insert(0, new JsonNumberEnumConverter<OrientationLock>());
+    options.Converters.Insert(0, new JsonNumberEnumConverter<RemuxConcurrentLimit>());
+
+    // Apparently JsonSerializerOptions can only be consumed once? Make copy of options everytime
+    return new JsonStringResult(JsonSerializer.Serialize(config, options));
   }
 
   [HttpGet("config/schema")]
