@@ -26,6 +26,7 @@ public enum DownloadMethod
     remux
 };
 
+[JsonConverter(typeof(StringEnumConverter))]
 public enum OrientationLock {
     /**
      * The default orientation. On iOS, this will allow all orientations except `Orientation.PORTRAIT_DOWN`.
@@ -73,4 +74,13 @@ public enum DownloadQuality
     Original,
     Low,
     High
+}
+
+// Limit Int range. Don't use Converter for this since we want them to enter int value
+public enum RemuxConcurrentLimit
+{
+    One = 1,
+    Two = 2,
+    Three = 3,
+    Four = 4,
 }

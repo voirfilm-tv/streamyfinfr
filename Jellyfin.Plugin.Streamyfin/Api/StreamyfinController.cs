@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using MediaBrowser.Common.Api;
@@ -11,7 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Jellyfin.Plugin.Streamyfin.Configuration;
-using NJsonSchema;
 using NJsonSchema.Generation;
 
 namespace Jellyfin.Plugin.Streamyfin.Api;
@@ -116,9 +116,8 @@ public class StreamyfinController : ControllerBase
   )
   {
     var settings = new SystemTextJsonSchemaGeneratorSettings();
-    // var settigns = new NewtonsoftJsonSchemaGeneratorSettings();
-    var generator = new JsonSchemaGenerator(settings);
-    JsonSchema schema = generator.Generate(typeof(Config));
+    settings.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    var schema = JsonSchemaGenerator.FromType<Config>(settings);
     return new JsonStringResult(schema.ToJson());
   }
 
@@ -131,8 +130,7 @@ public class StreamyfinController : ControllerBase
     var config = StreamyfinPlugin.Instance!.Configuration.Config;
     var serializer = new SerializerBuilder()
       .WithNamingConvention(CamelCaseNamingConvention.Instance)
-      .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
-      //.IgnoreUnmatchedProperties()
+      .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitNull | DefaultValuesHandling.OmitEmptyCollections)
       .Build();
     var yaml = serializer.Serialize(config);
     return new ConfigYamlRes { Value = yaml };
