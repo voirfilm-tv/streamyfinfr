@@ -1,5 +1,4 @@
 using Jellyfin.Data.Enums;
-using Newtonsoft.Json;
 using NJsonSchema.Annotations;
 
 namespace Jellyfin.Plugin.Streamyfin.Configuration.Settings;
@@ -12,17 +11,21 @@ public class DownloadOption
 
 public class LibraryOptions
 {
-    public DisplayType display { get; set; } = DisplayType.List;
-    public CardStyle cardStyle { get; set; } = CardStyle.Detailed;
-    public ImageStyle imageStyle { get; set; } = ImageStyle.Cover;
-    public bool showTitles { get; set; }
-    public bool showStats { get; set; }
+    public DisplayType display { get; set; } = DisplayType.list;
+    public CardStyle cardStyle { get; set; } = CardStyle.detailed;
+    public ImageStyle imageStyle { get; set; } = ImageStyle.cover;
+    public bool showTitles { get; set; } = true;
+    public bool showStats { get; set; } = true;
 };
 
+/// <summary>
+/// Assign a lock to given type value 
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class Lockable<T>
 {
     public bool? locked { get; set; } = false;
-    public T? value { get; set; }
+    public required T value { get; set; }
 }
 
 /// <summary>
@@ -32,13 +35,13 @@ public class Settings
 {
     // Media Controls
     [NotNull]
-    public Lockable<int?>? forwardSkipTime { get; set; } // = 30;
+    public Lockable<int>? forwardSkipTime { get; set; } // = 30;
     [NotNull]
-    public Lockable<int?>? rewindSkipTime { get; set; } // = 10;
+    public Lockable<int>? rewindSkipTime { get; set; } // = 10;
     
     // Audio
     [NotNull]
-    public Lockable<bool?>? rememberAudioSelections { get; set; } // = true;
+    public Lockable<bool>? rememberAudioSelections { get; set; } // = true;
     // TODO create type converter for CultureDto
     //  Currently fails since it doesnt have a parameterless constructor
     // public Lockable<CultureDto?>? defaultAudioLanguage { get; set; }
@@ -46,57 +49,57 @@ public class Settings
     // Subtitles
     // public Lockable<CultureDto?>? defaultSubtitleLanguage { get; set; }
     [NotNull]
-    public Lockable<SubtitlePlaybackMode?>? subtitleMode { get; set; }
+    public Lockable<SubtitlePlaybackMode>? subtitleMode { get; set; }
     [NotNull]
-    public Lockable<bool?>? rememberSubtitleSelections { get; set; } // = true;
+    public Lockable<bool>? rememberSubtitleSelections { get; set; } // = true;
     [NotNull]
-    public Lockable<int?>? subtitleSize { get; set; } // = 80;
+    public Lockable<int>? subtitleSize { get; set; } // = 80;
 
     // Other
     [NotNull]
-    public Lockable<bool?>? autoRotate { get; set; } // true
+    public Lockable<bool>? autoRotate { get; set; } // true
     [NotNull]
-    public Lockable<OrientationLock?>? defaultVideoOrientation { get; set; }
+    public Lockable<OrientationLock>? defaultVideoOrientation { get; set; }
     [NotNull]
-    public Lockable<bool?>? safeAreaInControlsEnabled { get; set; } // = true;
+    public Lockable<bool>? safeAreaInControlsEnabled { get; set; } // = true;
     [NotNull]
-    public Lockable<bool?>? showCustomMenuLinks { get; set; } // = false;
+    public Lockable<bool>? showCustomMenuLinks { get; set; } // = false;
     [NotNull]
-    public Lockable<string[]?>? hiddenLibraries { get; set; } // = [];
+    public Lockable<string[]>? hiddenLibraries { get; set; } // = [];
     [NotNull]
-    public Lockable<bool?>? disableHapticFeedback { get; set; } // = false;
+    public Lockable<bool>? disableHapticFeedback { get; set; } // = false;
 
     // Downloads
     [NotNull]
-    public Lockable<DownloadMethod?>? downloadMethod { get; set; }
+    public Lockable<DownloadMethod>? downloadMethod { get; set; }
     [NotNull]
-    public Lockable<int?>? remuxConcurrentLimit { get; set; }
+    public Lockable<RemuxConcurrentLimit>? remuxConcurrentLimit { get; set; }
     [NotNull]
-    public Lockable<bool?>? autoDownload { get; set; } // = false;
+    public Lockable<bool>? autoDownload { get; set; } // = false;
     [NotNull]
-    public Lockable<string?>? optimizedVersionsServerUrl { get; set; }
+    public Lockable<string>? optimizedVersionsServerUrl { get; set; }
     
     // region Plugins
     // Jellyseerr
     [NotNull]
-    public Lockable<string?>? jellyseerrServerUrl { get; set; }
+    public Lockable<string>? jellyseerrServerUrl { get; set; }
 
     // Marlin Search
     [NotNull]
-    public Lockable<SearchEngine?>? searchEngine { get; set; } // = SearchEngine.Jellyfin;
+    public Lockable<SearchEngine>? searchEngine { get; set; } // = SearchEngine.Jellyfin;
     [NotNull]
-    public Lockable<string?>? marlinServerUrl { get; set; }
+    public Lockable<string>? marlinServerUrl { get; set; }
 
     // Popular Lists
     [NotNull]
-    public Lockable<bool?>? usePopularPlugin { get; set; } // = false;
+    public Lockable<bool>? usePopularPlugin { get; set; } // = false;
     [NotNull]
-    public Lockable<string[]?>? mediaListCollectionIds { get; set; } // = false;
+    public Lockable<string[]>? mediaListCollectionIds { get; set; } // = false;
     // endregion Plugins
     
     // Misc.
     [NotNull]
-    public Lockable<LibraryOptions?>? libraryOptions { get; set; }
+    public Lockable<LibraryOptions>? libraryOptions { get; set; }
     
     // TODO: These are used outside of settings. Review usages/delete any unused later.
     // public Lockable<bool?>? forceLandscapeInVideoPlayer { get; set; }

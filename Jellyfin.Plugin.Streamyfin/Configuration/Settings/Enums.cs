@@ -22,10 +22,11 @@ public enum SearchEngine
 [JsonConverter(typeof(StringEnumConverter))]
 public enum DownloadMethod
 {
-    OPTIMIZED,
-    REMUX
+    optimized,
+    remux
 };
 
+[JsonConverter(typeof(StringEnumConverter))]
 public enum OrientationLock {
     /**
      * The default orientation. On iOS, this will allow all orientations except `Orientation.PORTRAIT_DOWN`.
@@ -33,25 +34,9 @@ public enum OrientationLock {
      */
     Default = 0,
     /**
-     * All four possible orientations
-     */
-    All = 1,
-    /**
-     * Any portrait orientation.
-     */
-    Portrait = 2,
-    /**
      * Right-side up portrait only.
      */
     PortraitUp = 3,
-    /**
-     * Upside down portrait only.
-     */
-    PortraitDown = 4,
-    /**
-     * Any landscape orientation.
-     */
-    Landscape = 5,
     /**
      * Left landscape only.
      */
@@ -60,35 +45,27 @@ public enum OrientationLock {
      * Right landscape only.
      */
     LandscapeRight = 7,
-    /**
-     * A platform specific orientation. This is not a valid policy that can be applied in [`lockAsync`](#screenorientationlockasyncorientationlock).
-     */
-    Other = 8,
-    /**
-     * An unknown screen orientation lock. This is not a valid policy that can be applied in [`lockAsync`](#screenorientationlockasyncorientationlock).
-     */
-    Unknown = 9,
 }
 
 [JsonConverter(typeof(StringEnumConverter))]
 public enum DisplayType
 {
-    Row,
-    List
+    row,
+    list
 };
 
 [JsonConverter(typeof(StringEnumConverter))]
 public enum CardStyle
 {
-    Compact,
-    Detailed
+    compact,
+    detailed
 };
 
 [JsonConverter(typeof(StringEnumConverter))]
 public enum ImageStyle
 {
-    Poster,
-    Cover
+    poster,
+    cover
 };
 
 [JsonConverter(typeof(StringEnumConverter))]
@@ -97,4 +74,13 @@ public enum DownloadQuality
     Original,
     Low,
     High
+}
+
+// Limit Int range. Don't use Converter for this since we want them to enter int value
+public enum RemuxConcurrentLimit
+{
+    One = 1,
+    Two = 2,
+    Three = 3,
+    Four = 4,
 }

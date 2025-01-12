@@ -62,6 +62,13 @@ settings:
 
   # Misc.
   libraryOptions:
+    locked: false
+    value:
+      display: list | row
+      cardStyle: detailed | compact
+      imageStyle: cover | poster
+      showTitles: boolean
+      showStats: boolean
 ```
 
 ### Install Process
