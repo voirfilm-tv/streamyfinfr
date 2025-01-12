@@ -1,11 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Jellyfin.Data.Enums;
-using Jellyfin.Extensions.Json;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
+using Jellyfin.Plugin.Streamyfin.Configuration;
 using MediaBrowser.Common.Api;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Dto;
@@ -14,8 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Jellyfin.Plugin.Streamyfin.Configuration;
-using NJsonSchema.Generation;
 
 namespace Jellyfin.Plugin.Streamyfin.Api;
 
@@ -56,13 +49,16 @@ public class StreamyfinController : ControllerBase
   private readonly IUserManager _userManager;
   private readonly ILibraryManager _libraryManager;
   private readonly IDtoService _dtoService;
+  private readonly SerializationHelper _serializationHelperService;
 
   public StreamyfinController(
-      ILoggerFactory loggerFactory,
-      IDtoService dtoService,
-      IServerConfigurationManager config,
-      IUserManager userManager,
-      ILibraryManager libraryManager)
+    ILoggerFactory loggerFactory,
+    IDtoService dtoService,
+    IServerConfigurationManager config,
+    IUserManager userManager,
+    ILibraryManager libraryManager,
+    SerializationHelper serializationHelperService
+  )
   {
     _loggerFactory = loggerFactory;
     _logger = loggerFactory.CreateLogger<StreamyfinController>();
@@ -70,6 +66,7 @@ public class StreamyfinController : ControllerBase
     _config = config;
     _userManager = userManager;
     _libraryManager = libraryManager;
+    _serializationHelperService = serializationHelperService;
 
     _logger.LogInformation("StreamyfinController Loaded");
   }
@@ -81,14 +78,10 @@ public class StreamyfinController : ControllerBase
     [FromBody, Required] ConfigYamlRes config
   )
   {
-    var deserializer = new DeserializerBuilder()
-      .WithNamingConvention(CamelCaseNamingConvention.Instance)  // see height_in_inches in sample yml 
-      .Build();
-
     Config p;
     try
     {
-      p = deserializer.Deserialize<Config>(config.Value);
+      p = _serializationHelperService.Deserialize<Config>(config.Value);
     }
     catch (Exception e)
     {
@@ -109,16 +102,8 @@ public class StreamyfinController : ControllerBase
   public ActionResult getConfig(
   )
   {
-    var options = new JsonSerializerOptions(JsonDefaults.Options);
     var config = StreamyfinPlugin.Instance!.Configuration.Config;
-
-    // We need to ensure these are serialized first to their int values
-    options.Converters.Insert(0, new JsonNumberEnumConverter<SubtitlePlaybackMode>());
-    options.Converters.Insert(0, new JsonNumberEnumConverter<OrientationLock>());
-    options.Converters.Insert(0, new JsonNumberEnumConverter<RemuxConcurrentLimit>());
-
-    // Apparently JsonSerializerOptions can only be consumed once? Make copy of options everytime
-    return new JsonStringResult(JsonSerializer.Serialize(config, options));
+    return new JsonStringResult(_serializationHelperService.SerializeToJson(config));
   }
 
   [HttpGet("config/schema")]
@@ -126,25 +111,18 @@ public class StreamyfinController : ControllerBase
   public ActionResult getConfigSchema(
   )
   {
-    var settings = new SystemTextJsonSchemaGeneratorSettings();
-    settings.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    var schema = JsonSchemaGenerator.FromType<Config>(settings);
-    return new JsonStringResult(schema.ToJson());
+    return new JsonStringResult(SerializationHelper.GetJsonSchema<Config>());
   }
 
   [HttpGet("config/yaml")]
   [Authorize]
   [ProducesResponseType(StatusCodes.Status200OK)]
-  public ActionResult<ConfigYamlRes> getConfigYaml(
-  )
+  public ActionResult<ConfigYamlRes> getConfigYaml()
   {
-    var config = StreamyfinPlugin.Instance!.Configuration.Config;
-    var serializer = new SerializerBuilder()
-      .WithNamingConvention(CamelCaseNamingConvention.Instance)
-      .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitNull | DefaultValuesHandling.OmitEmptyCollections)
-      .Build();
-    var yaml = serializer.Serialize(config);
-    return new ConfigYamlRes { Value = yaml };
+    return new ConfigYamlRes
+    {
+      Value = _serializationHelperService.SerializeToYaml(StreamyfinPlugin.Instance!.Configuration.Config)
+    };
   }
 
   //[HttpGet("config.yaml")]
