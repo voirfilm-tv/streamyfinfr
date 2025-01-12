@@ -1,0 +1,25 @@
+name: "Create release"
+
+on:
+  push:
+    tags:
+    - '*'
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  main:
+    name: Create release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        id: lint_pr_title
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set env
+        run: echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: build and release application
+        run: make release
+      - uses: stefanzweifel/git-auto-commit-action@v5

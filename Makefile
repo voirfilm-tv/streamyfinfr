@@ -1,6 +1,9 @@
-export VERSION := 0.32.0.0
+export VERSION := ${VERSION}
 export GITHUB_REPO := streamyfin/jellyfin-plugin-streamyfin
 export FILE := streamyfin-${VERSION}.zip
+
+test:
+	printenv | grep VERSION
 
 zip:
 	mkdir -p ./dist
