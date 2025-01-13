@@ -64,6 +64,28 @@ settings:
   usePopularPlugin:
   mediaListCollectionIds:
 
+  # Home
+  # home
+  home:
+    locked: true
+    value:
+      sections:
+        Recent movies:
+          items:
+              includeItemTypes:
+                - Movie
+        Recent shows:
+          items:
+            includeItemTypes:
+            - Series
+        Continue Watching:
+          items:
+            filters:
+              - IsResumable
+            includeItemTypes:
+            - Movie
+            - Series
+
   # Misc.
   libraryOptions:
     locked: false

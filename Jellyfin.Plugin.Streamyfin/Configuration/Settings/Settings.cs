@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using Jellyfin.Data.Enums;
+using MediaBrowser.Model.Querying;
 using NJsonSchema.Annotations;
+using System.Xml.Serialization;
 
 namespace Jellyfin.Plugin.Streamyfin.Configuration.Settings;
 
@@ -28,11 +31,63 @@ public class Lockable<T>
     public required T value { get; set; }
 }
 
+
+public class Home
+{
+  [NotNull]
+  public SerializableDictionary<string, Section>? sections { get; set; }
+}
+
+public class Section
+{
+  [NotNull]
+  public SectionOrientation? orientation { get; set; }
+  [NotNull]
+  public ItemArgs? items { get; set; }
+//   public SectionSuggestions? suggestions { get; set; } = null;
+}
+
+public enum SectionOrientation
+{
+  vertical,
+  horizontal
+}
+
+public enum SectionType
+{
+  row,
+  carousel,
+}
+
+public class ItemArgs
+{
+  public ItemSortBy[]? sortBy { get; set; }
+  public SortOrder[]? sortOrder { get; set; }
+  public List<string>? genres { get; set; }
+  public string? parentId { get; set; }
+  public ItemFilter[]? filters { get; set; }
+  public BaseItemKind[]? includeItemTypes { get; set; }
+//   public bool? recursive { get; set; }
+}
+
+public class SectionSuggestions
+{
+  public SuggestionsArgs? args { get; set; }
+}
+
+public class SuggestionsArgs
+{
+  public BaseItemKind[]? type { get; set; }
+}
+
 /// <summary>
 /// Streamyfin application settings
 /// </summary>
 public class Settings
 {
+    [NotNull]
+    public Lockable<Home>? home { get; set; }
+
     // Media Controls
     [NotNull]
     public Lockable<int>? forwardSkipTime { get; set; } // = 30;
@@ -109,4 +164,69 @@ public class Settings
     // public Lockable<DownloadOption?>? downloadQuality { get; set; }
     // public Lockable<bool?>? playDefaultAudioTrack { get; set; } // = true;
     // public Lockable<bool?>? showHomeTitles { get; set; } // = true;
+}
+
+[XmlRoot("dictionary")]
+public class SerializableDictionary<TKey, TValue>
+       : Dictionary<TKey, TValue>, IXmlSerializable
+{
+  #region IXmlSerializable Members
+  public System.Xml.Schema.XmlSchema GetSchema()
+  {
+    return null;
+  }
+
+  public void ReadXml(System.Xml.XmlReader reader)
+  {
+    XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
+    XmlSerializer valueSerializer = new XmlSerializer(typeof(TValue));
+
+    bool wasEmpty = reader.IsEmptyElement;
+    reader.Read();
+
+    if (wasEmpty)
+      return;
+
+    while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
+    {
+      reader.ReadStartElement("item");
+
+      reader.ReadStartElement("key");
+      TKey key = (TKey)keySerializer.Deserialize(reader);
+      reader.ReadEndElement();
+
+      reader.ReadStartElement("value");
+      TValue value = (TValue)valueSerializer.Deserialize(reader);
+      reader.ReadEndElement();
+
+      this.Add(key, value);
+
+      reader.ReadEndElement();
+      reader.MoveToContent();
+    }
+    reader.ReadEndElement();
+  }
+
+  public void WriteXml(System.Xml.XmlWriter writer)
+  {
+    XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
+    XmlSerializer valueSerializer = new XmlSerializer(typeof(TValue));
+
+    foreach (TKey key in this.Keys)
+    {
+      writer.WriteStartElement("item");
+
+      writer.WriteStartElement("key");
+      keySerializer.Serialize(writer, key);
+      writer.WriteEndElement();
+
+      writer.WriteStartElement("value");
+      TValue value = this[key];
+      valueSerializer.Serialize(writer, value);
+      writer.WriteEndElement();
+
+      writer.WriteEndElement();
+    }
+  }
+  #endregion
 }
