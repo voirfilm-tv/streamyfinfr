@@ -74,3 +74,10 @@ settings:
             includeItemTypes:
             - Movie
             - Series
+        My collection:
+          items:
+            # parentID is the collection id. You can find it in the url on the web collection page
+            parentId: ab7b2bcacafa97a2ad7d72d86eb1b408
+            includeItemTypes:
+            - Movie
+            - Series
