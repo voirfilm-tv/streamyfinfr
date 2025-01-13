@@ -44,5 +44,33 @@ settings:
   usePopularPlugin:
   mediaListCollectionIds:
 
-  # Misc.
+  # misc
   libraryOptions:
+    locked: false
+    value:
+      display: list | row
+      cardStyle: detailed | compact
+      imageStyle: cover | poster
+      showTitles: boolean
+      showStats: boolean
+
+  # Home
+  home:
+    locked: true
+    value:
+      sections:
+        Recent movies:
+          items:
+              includeItemTypes:
+                - Movie
+        Recent shows:
+          items:
+            includeItemTypes:
+            - Series
+        Continue Watching:
+          items:
+            filters:
+              - IsResumable
+            includeItemTypes:
+            - Movie
+            - Series
