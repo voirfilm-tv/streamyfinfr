@@ -1,3 +1,5 @@
+#pragma warning disable CA1008
+
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
 
