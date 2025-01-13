@@ -3,7 +3,7 @@
 > A plugin for Jellyfin that allows a centralised configuration of Streamyfin.
 
 ### Required minimum versions
-- Streamyfin App version: **0.25.0**
+- Streamyfin App version: **0.25.0** (currently in Beta) 
 - Plugin version: **0.33.0.0**
 
 ### What is this?
