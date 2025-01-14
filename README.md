@@ -80,6 +80,7 @@ settings:
     value:
       sections:
         Recent movies:
+          orientation: horizontal
           items:
               includeItemTypes:
                 - Movie
