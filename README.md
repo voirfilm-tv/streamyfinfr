@@ -82,6 +82,8 @@ settings:
         Recent movies:
           orientation: horizontal
           items:
+              filters:
+                - IsUnplayed
               includeItemTypes:
                 - Movie
         Recent shows:
