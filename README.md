@@ -13,6 +13,7 @@ The Jellyfin Plugin for Streamyfin is a plugin you install into Jellyfin that ho
 - Auto log in to Jellyseerr without the user having to do anythin
 - Choose the default languages 
 - Set download method and search provider
+- Customize homescreen
 - And more...
 
 ### Config example
@@ -110,6 +111,13 @@ settings:
 2. Go to Catalog and search for Streamyfin
 3. Click on it and install
 4. Restart Jellyfin
+
+### Customize home screen
+
+It's possible to define a custom homescreen with this plugin.
+See the home definition in the example for info.
+
+Together with the [collection import](https://github.com/lostb1t/jellyfin-plugin-collection-import) app, one can make very dynamic homescreens.
 
 ### Create release
 
