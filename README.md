@@ -16,6 +16,14 @@ The Jellyfin Plugin for Streamyfin is a plugin you install into Jellyfin that ho
 - Customize homescreen
 - And more...
 
+### Customize home screen
+
+It's possible to define a custom homescreen with this plugin.
+See the home definition in the example below for more info.
+
+Together with the [collection import](https://github.com/lostb1t/jellyfin-plugin-collection-import) app, one can make very dynamic homescreens.
+
+
 ### Config example
 
 ```yaml
@@ -111,13 +119,6 @@ settings:
 2. Go to Catalog and search for Streamyfin
 3. Click on it and install
 4. Restart Jellyfin
-
-### Customize home screen
-
-It's possible to define a custom homescreen with this plugin.
-See the home definition in the example for info.
-
-Together with the [collection import](https://github.com/lostb1t/jellyfin-plugin-collection-import) app, one can make very dynamic homescreens.
 
 ### Create release
 
