@@ -61,9 +61,11 @@ settings:
       sections:
         Recent movies:
           orientation: horizontal
+          filters:
+            - IsUnplayed
           items:
-              includeItemTypes:
-                - Movie
+            includeItemTypes:
+              - Movie
         Recent shows:
           items:
             includeItemTypes:
