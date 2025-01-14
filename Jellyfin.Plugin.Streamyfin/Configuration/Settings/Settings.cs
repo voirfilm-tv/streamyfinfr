@@ -67,7 +67,7 @@ public class ItemArgs
   public string? parentId { get; set; }
   public ItemFilter[]? filters { get; set; }
   public BaseItemKind[]? includeItemTypes { get; set; }
-//   public bool? recursive { get; set; }
+  public int? limit { get; set; }
 }
 
 public class SectionSuggestions
