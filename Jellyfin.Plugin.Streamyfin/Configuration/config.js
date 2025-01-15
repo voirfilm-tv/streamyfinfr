@@ -51,9 +51,20 @@ export default function (view) {
                                 strings: true
                             },
                             acceptSuggestionOnEnter: 'on',
+                            suggestOnTriggerCharacters: true,
                             model: monaco.editor.createModel(res.Value, 'yaml', yamlModelUri),
                         });
-                    })
+                        Streamyfin.editor.onDidChangeModelContent(function (e) {
+                            // console.log(e.eol);
+                            // Streamyfin.editor.trigger('', 'editor.action.triggerSuggest', {});
+                            // console.log(Streamyfin.editor.model.getLineContent(position.lineNumber));
+                            if (e.eol === '\n') {
+                                // console.log('triggering suggest');
+                                // Streamyfin.editor.action.triggerSuggest();
+                                Streamyfin.editor.trigger('', 'editor.action.triggerSuggest', {});
+                            }
+                        });
+                    });
                 })
                 .catch(function (error) {
                     console.error(error);
