@@ -15,15 +15,15 @@ export default function (view) {
 
             window.ApiClient.ajax({ type: 'POST', url, data, contentType: 'application/json' })
                 .then(function (response) {
-                        response.json().then(res => {
-                            if (res.Error == true) {
-                                Dashboard.hideLoadingMsg();
-                                Dashboard.alert(res.Message);
-                            } else {
-                                Dashboard.processPluginConfigurationUpdateResult();
-                            }
-                        })
-                    }
+                    response.json().then(res => {
+                        if (res.Error == true) {
+                            Dashboard.hideLoadingMsg();
+                            Dashboard.alert(res.Message);
+                        } else {
+                            Dashboard.processPluginConfigurationUpdateResult();
+                        }
+                    })
+                }
 
                 )
                 .catch(function (error) {
@@ -45,22 +45,17 @@ export default function (view) {
                         Streamyfin.editor = monaco.editor.create(document.getElementById('yamleditor'), {
                             automaticLayout: true,
                             language: 'yaml',
-                            quickSuggestions: {
-                                other: true,
-                                comments: false,
-                                strings: true
+                            suggest: {
+                                showWords: false
                             },
-                            acceptSuggestionOnEnter: 'on',
-                            suggestOnTriggerCharacters: true,
                             model: monaco.editor.createModel(res.Value, 'yaml', yamlModelUri),
                         });
                         Streamyfin.editor.onDidChangeModelContent(function (e) {
-                            if (e.eol === '\n') {
+                            if (e.eol === '\n' && e.changes[0].text.endsWith(" ")) {
                                 // need timeout so it triggers after auto formatting
                                 setTimeout(() => {
                                     Streamyfin.editor.trigger('', 'editor.action.triggerSuggest', {});
-                                  }, "100");
-                               
+                                }, "100");
                             }
                         });
                     });
