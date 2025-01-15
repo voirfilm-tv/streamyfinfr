@@ -50,6 +50,7 @@ export default function (view) {
                                 comments: false,
                                 strings: true
                             },
+                            acceptSuggestionOnEnter: 'on',
                             model: monaco.editor.createModel(res.Value, 'yaml', yamlModelUri),
                         });
                     })
