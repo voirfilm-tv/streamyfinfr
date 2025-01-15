@@ -33,9 +33,3 @@ See [examples](https://github.com/streamyfin/jellyfin-plugin-streamyfin/tree/mai
 2. Go to Catalog and search for Streamyfin
 3. Click on it and install
 4. Restart Jellyfin
-
-### Create release
-
-- bump version in makefile
-- run `make release`
-- commit and push changes made release script
