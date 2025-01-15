@@ -61,14 +61,17 @@ settings:
       sections:
         Recent movies:
           orientation: horizontal
-          filters:
-            - IsUnplayed
           items:
+            sortBy:
+              - DateCreated
+            sortOrder:
+              - Descending
             includeItemTypes:
               - Movie
-        Recent shows:
+        Series and Movies:
           items:
             includeItemTypes:
+            - Movie
             - Series
         Continue Watching:
           items:
@@ -77,6 +80,8 @@ settings:
             includeItemTypes:
             - Movie
             - Series
+        # you filter by collections. 
+        # Checkout https://github.com/lostb1t/jellyfin-plugin-collection-import to create collections from external lists
         My collection:
           items:
             # parentID is the collection id. You can find it in the url on the web collection page
