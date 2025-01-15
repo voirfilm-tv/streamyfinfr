@@ -55,13 +55,12 @@ export default function (view) {
                             model: monaco.editor.createModel(res.Value, 'yaml', yamlModelUri),
                         });
                         Streamyfin.editor.onDidChangeModelContent(function (e) {
-                            // console.log(e.eol);
-                            // Streamyfin.editor.trigger('', 'editor.action.triggerSuggest', {});
-                            // console.log(Streamyfin.editor.model.getLineContent(position.lineNumber));
                             if (e.eol === '\n') {
-                                // console.log('triggering suggest');
-                                // Streamyfin.editor.action.triggerSuggest();
-                                Streamyfin.editor.trigger('', 'editor.action.triggerSuggest', {});
+                                // need timeout so it triggers after auto formatting
+                                setTimeout(() => {
+                                    Streamyfin.editor.trigger('', 'editor.action.triggerSuggest', {});
+                                  }, "100");
+                               
                             }
                         });
                     });
