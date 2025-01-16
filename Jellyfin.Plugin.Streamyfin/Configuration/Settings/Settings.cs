@@ -43,7 +43,9 @@ public class Section
   [NotNull]
   public SectionOrientation? orientation { get; set; }
   [NotNull]
-  public ItemArgs? items { get; set; }
+  public Items? items { get; set; }
+  [NotNull]
+  public NextUp? nextUp { get; set; }
 //   public SectionSuggestions? suggestions { get; set; } = null;
 }
 
@@ -59,7 +61,7 @@ public enum SectionType
   carousel,
 }
 
-public class ItemArgs
+public class Items
 {
   public ItemSortBy[]? sortBy { get; set; }
   public SortOrder[]? sortOrder { get; set; }
@@ -68,6 +70,14 @@ public class ItemArgs
   public ItemFilter[]? filters { get; set; }
   public BaseItemKind[]? includeItemTypes { get; set; }
   public int? limit { get; set; }
+}
+
+public class NextUp
+{
+  public string? parentId { get; set; }
+  public int? limit { get; set; }
+  public bool? enableResumable { get; set; }
+  public bool? enableRewatching { get; set; }
 }
 
 public class SectionSuggestions
