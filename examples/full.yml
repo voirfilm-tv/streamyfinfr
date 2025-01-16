@@ -89,3 +89,7 @@ settings:
             includeItemTypes:
             - Movie
             - Series
+        Next Up:
+          orientation: horizontal
+          nextUp:
+            limit: 10
