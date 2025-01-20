@@ -1,6 +1,8 @@
 #pragma warning disable CA2227
 #pragma warning disable CS0219
 
+using System.Collections.Generic;
+using Jellyfin.Data.Entities.Libraries;
 using Jellyfin.Data.Enums;
 using Jellyfin.Plugin.Streamyfin.Configuration.Settings;
 using MediaBrowser.Model.Plugins;
@@ -24,7 +26,7 @@ public class PluginConfiguration : BasePluginConfiguration
   {
     _serializationHelper = serializationHelper;
   }
-  
+
 
   public PluginConfiguration()
   {
@@ -44,32 +46,30 @@ public class PluginConfiguration : BasePluginConfiguration
     subtitleMode = new() { value = SubtitlePlaybackMode.Default },
     rememberSubtitleSelections = new() { value = false },
     subtitleSize = new() { value = 80 },
-    autoRotate = new () { value = true },
-    defaultVideoOrientation = new () { value = OrientationLock.Default },
-    safeAreaInControlsEnabled = new () { value = true },
-    showCustomMenuLinks = new () { value = false },
-    hiddenLibraries = new () { value = new[] { "Enter library id(s)" } },
-    disableHapticFeedback = new () { value = false },
-    downloadMethod = new () { value = DownloadMethod.remux },
-    remuxConcurrentLimit = new () { value = RemuxConcurrentLimit.One },
-    autoDownload = new () { value = false },
-    optimizedVersionsServerUrl = new () { value = "Enter optimized server url" },
-    jellyseerrServerUrl = new () { value = "Enter jellyseerr server url" },
-    searchEngine = new () { value = SearchEngine.Jellyfin },
+    autoRotate = new() { value = true },
+    defaultVideoOrientation = new() { value = OrientationLock.Default },
+    safeAreaInControlsEnabled = new() { value = true },
+    showCustomMenuLinks = new() { value = false },
+    hiddenLibraries = new() { value = new[] { "Enter library id(s)" } },
+    disableHapticFeedback = new() { value = false },
+    downloadMethod = new() { value = DownloadMethod.remux },
+    remuxConcurrentLimit = new() { value = RemuxConcurrentLimit.One },
+    autoDownload = new() { value = false },
+    optimizedVersionsServerUrl = new() { value = "Enter optimized server url" },
+    jellyseerrServerUrl = new() { value = "Enter jellyseerr server url" },
+    searchEngine = new() { value = SearchEngine.Jellyfin },
     marlinServerUrl = new() { value = "Enter marlin server url" },
     usePopularPlugin = new() { value = false },
-    mediaListCollectionIds = new() { value = new [] { "Enter collection id(s)" } },
+    mediaListCollectionIds = new() { value = new[] { "Enter collection id(s)" } },
     libraryOptions = new() { value = new LibraryOptions() },
     home = new()
     {
       value = new Home
       {
-        sections = new SerializableDictionary<string, Section>
-        {
-          {
-            "Items Example",
-            new Section
-            {
+        sections = new Section[] {
+          // {
+            new() {
+              title = "Items Example",
               orientation = SectionOrientation.vertical,
               items = new()
               {
@@ -81,21 +81,21 @@ public class PluginConfiguration : BasePluginConfiguration
                 includeItemTypes = [BaseItemKind.Episode, BaseItemKind.Movie],
                 limit = 25,
               }
-            }
+            // }
           },
-          {
-            "Next Up Example",
-            new Section
-            {
-              orientation = SectionOrientation.vertical,
+          // {
+            new() {
+            title = "Nextup Example",
+            orientation = SectionOrientation.vertical,
               nextUp = new()
               {
+
                 parentId = "YOURCOLLECTIONID",
                 limit = 25,
                 enableResumable = true,
                 enableRewatching = true,
               }
-            }
+            // }
           },
         }
       }

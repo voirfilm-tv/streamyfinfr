@@ -4,6 +4,7 @@ using Jellyfin.Data.Enums;
 using MediaBrowser.Model.Querying;
 using NJsonSchema.Annotations;
 using System.Xml.Serialization;
+using System.Collections.ObjectModel;
 
 namespace Jellyfin.Plugin.Streamyfin.Configuration.Settings;
 
@@ -37,15 +38,19 @@ public class Home
 {
   [NotNull]
   [Display(Name = "Sections")]
-  public SerializableDictionary<string, Section>? sections { get; set; }
+  // public SerializableDictionary<string, Section>? sections { get; set; }
+  public Section[]? sections { get; set; }
 }
 
 public class Section
-{
+{  
+  [NotNull]
+  public string title { get; set; }
+
   [NotNull]
   [Display(Name = "Media poster orientation")]
   public SectionOrientation? orientation { get; set; }
-  
+
   [NotNull]
   [Display(Name = "Items", Description = "Customize the Items API query")]
   public Items? items { get; set; }
@@ -77,7 +82,7 @@ public class Items
   public SortOrder[]? sortOrder { get; set; }
   
   [Display(Name = "Genres")]
-  public List<string>? genres { get; set; }
+  public Collection<string>? genres { get; set; }
   
   [Display(Name = "Parent id")]
   public string? parentId { get; set; }
