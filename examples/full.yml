@@ -59,7 +59,7 @@ settings:
     locked: true
     value:
       sections:
-        Recent movies:
+        - title: Recent movies:
           orientation: horizontal
           items:
             sortBy:
@@ -68,12 +68,12 @@ settings:
               - Descending
             includeItemTypes:
               - Movie
-        Series and Movies:
+        - title: Series and Movies:
           items:
             includeItemTypes:
             - Movie
             - Series
-        Continue Watching:
+        - title: Continue Watching:
           items:
             filters:
               - IsResumable
@@ -82,14 +82,14 @@ settings:
             - Series
         # you filter by collections. 
         # Checkout https://github.com/lostb1t/jellyfin-plugin-collection-import to create collections from external lists
-        My collection:
+        - title: My collection:
           items:
             # parentID is the collection id. You can find it in the url on the web collection page
             parentId: ab7b2bcacafa97a2ad7d72d86eb1b408
             includeItemTypes:
             - Movie
             - Series
-        Next Up:
+        - title: Next Up:
           orientation: horizontal
           nextUp:
             limit: 10
