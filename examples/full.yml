@@ -80,6 +80,7 @@ settings:
             includeItemTypes:
             - Movie
             - Series
+            - Episode
         # you filter by collections. 
         # Checkout https://github.com/lostb1t/jellyfin-plugin-collection-import to create collections from external lists
         - title: My collection:
