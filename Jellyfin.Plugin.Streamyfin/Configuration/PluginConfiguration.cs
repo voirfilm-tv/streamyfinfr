@@ -86,7 +86,7 @@ public class PluginConfiguration : BasePluginConfiguration
           // {
             new() {
             title = "Nextup Example",
-            orientation = SectionOrientation.vertical,
+            orientation = SectionOrientation.horizontal,
               nextUp = new()
               {
 
