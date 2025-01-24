@@ -67,35 +67,46 @@ public class PluginConfiguration : BasePluginConfiguration
       value = new Home
       {
         sections = new Section[] {
-          // {
-            new() {
-              title = "Items Example",
+          new() {
+              title = "Continue Watching",
               orientation = SectionOrientation.vertical,
               items = new()
               {
-                parentId = "YOURCOLLECTIONID",
-                sortBy = [ItemSortBy.Default],
-                sortOrder = [SortOrder.Ascending],
-                genres = ["Your genres"],
-                filters = [ItemFilter.IsFavorite],
+                filters = [ItemFilter.IsResumable],
                 includeItemTypes = [BaseItemKind.Episode, BaseItemKind.Movie],
                 limit = 25,
               }
-            // }
           },
-          // {
             new() {
-            title = "Nextup Example",
+            title = "Nextup",
             orientation = SectionOrientation.horizontal,
-              nextUp = new()
+            nextUp = new()
               {
-
-                parentId = "YOURCOLLECTIONID",
                 limit = 25,
-                enableResumable = true,
-                enableRewatching = true,
               }
-            // }
+          },
+          new() {
+              title = "Recently Added",
+              orientation = SectionOrientation.vertical,
+              items = new()
+              {
+                sortBy = [ItemSortBy.Default],
+                sortOrder = [SortOrder.Ascending],
+                includeItemTypes = [BaseItemKind.Series, BaseItemKind.Movie],
+                limit = 25,
+              }
+          },
+          new() {
+              title = "Favorites",
+              orientation = SectionOrientation.vertical,
+              items = new()
+              {
+                sortBy = [ItemSortBy.Default],
+                sortOrder = [SortOrder.Ascending],
+                filters = [ItemFilter.IsFavorite],
+                includeItemTypes = [BaseItemKind.Series, BaseItemKind.Movie],
+                limit = 25,
+              }
           },
         }
       }
