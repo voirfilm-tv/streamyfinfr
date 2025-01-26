@@ -76,9 +76,9 @@ settings:
           orientation: vertical
           items:
             sortBy:
-            - Default
+            - DateCreated
             sortOrder:
-            - Ascending
+            - Descending
             includeItemTypes:
             - Series
             - Movie
