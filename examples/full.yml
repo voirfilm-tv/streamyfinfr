@@ -81,7 +81,7 @@ settings:
             - Movie
             - Series
             - Episode
-        # you filter by collections. 
+        # It's possible to filter by collection. 
         # Checkout https://github.com/lostb1t/jellyfin-plugin-collection-import to create collections from external lists
         - title: My collection:
           items:
