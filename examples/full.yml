@@ -59,28 +59,43 @@ settings:
     locked: true
     value:
       sections:
-        - title: Recent movies:
-          orientation: horizontal
-          items:
-            sortBy:
-              - DateCreated
-            sortOrder:
-              - Descending
-            includeItemTypes:
-              - Movie
-        - title: Series and Movies:
-          items:
-            includeItemTypes:
-            - Movie
-            - Series
-        - title: Continue Watching:
+        - title: Continue Watching
+          orientation: vertical
           items:
             filters:
-              - IsResumable
+            - IsResumable
             includeItemTypes:
-            - Movie
-            - Series
             - Episode
+            - Movie
+            limit: 25
+        - title: Nextup
+          orientation: horizontal
+          nextUp:
+            limit: 25
+        - title: Recently Added
+          orientation: vertical
+          items:
+            sortBy:
+            - Default
+            sortOrder:
+            - Ascending
+            includeItemTypes:
+            - Series
+            - Movie
+            limit: 25
+        - title: Favorites
+          orientation: vertical
+          items:
+            sortBy:
+            - Default
+            sortOrder:
+            - Ascending
+            filters:
+            - IsFavorite
+            includeItemTypes:
+            - Series
+            - Movie
+            limit: 25
         # It's possible to filter by collection. 
         # Checkout https://github.com/lostb1t/jellyfin-plugin-collection-import to create collections from external lists
         - title: My collection:
@@ -90,7 +105,3 @@ settings:
             includeItemTypes:
             - Movie
             - Series
-        - title: Next Up:
-          orientation: horizontal
-          nextUp:
-            limit: 25
