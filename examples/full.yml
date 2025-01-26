@@ -93,4 +93,4 @@ settings:
         - title: Next Up:
           orientation: horizontal
           nextUp:
-            limit: 10
+            limit: 25
