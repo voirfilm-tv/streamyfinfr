@@ -110,6 +110,9 @@ public class NextUp
   
   [Display(Name = "Enable rewatching")]
   public bool? enableRewatching { get; set; }
+  
+  [Display(Name = "Starting date of shows to show in Next Up section")]
+  public bool? nextUpDateCutoff { get; set; }
 }
 
 public class SectionSuggestions
