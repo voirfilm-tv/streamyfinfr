@@ -62,6 +62,7 @@ public class PluginConfiguration : BasePluginConfiguration
     usePopularPlugin = new() { value = false },
     mediaListCollectionIds = new() { value = new[] { "Enter collection id(s)" } },
     libraryOptions = new() { value = new LibraryOptions() },
+    defaultBitrate = new() { value = Bitrates.2MBps},
     home = new()
     {
       value = new Home
