@@ -9,6 +9,14 @@
         "imageUrl": "https://raw.githubusercontent.com/streamyfin/jellyfin-plugin-streamyfin/main/logo.png",
         "versions": [
             {
+                "version": "0.40.0.0",
+                "changelog": "- See the full changelog at [GitHub](https://github.com/streamyfin/jellyfin-plugin-streamyfin/releases/tag/0.40.0.0)\n",
+                "targetAbi": "10.9.9.0",
+                "sourceUrl": "https://github.com/streamyfin/jellyfin-plugin-streamyfin/releases/download/0.40.0.0/streamyfin-0.40.0.0.zip",
+                "checksum": "86e98ad9c651e60117d814d50ab34a0e",
+                "timestamp": "2025-02-14T19:45:59Z"
+            },
+            {
                 "version": "0.39.0.0",
                 "changelog": "- See the full changelog at [GitHub](https://github.com/streamyfin/jellyfin-plugin-streamyfin/releases/tag/0.39.0.0)\n",
                 "targetAbi": "10.9.9.0",
