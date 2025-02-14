@@ -90,8 +90,8 @@ public class PluginConfiguration : BasePluginConfiguration
               orientation = SectionOrientation.vertical,
               items = new()
               {
-                sortBy = [ItemSortBy.Default],
-                sortOrder = [SortOrder.Ascending],
+                sortBy = [ItemSortBy.DateCreated],
+                sortOrder = [SortOrder.Descending],
                 includeItemTypes = [BaseItemKind.Series, BaseItemKind.Movie],
                 limit = 25,
               }
