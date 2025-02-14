@@ -59,8 +59,6 @@ public class PluginConfiguration : BasePluginConfiguration
     jellyseerrServerUrl = new() { value = "Enter jellyseerr server url" },
     searchEngine = new() { value = SearchEngine.Jellyfin },
     marlinServerUrl = new() { value = "Enter marlin server url" },
-    usePopularPlugin = new() { value = false },
-    mediaListCollectionIds = new() { value = new[] { "Enter collection id(s)" } },
     libraryOptions = new() { value = new LibraryOptions() },
     home = new()
     {
