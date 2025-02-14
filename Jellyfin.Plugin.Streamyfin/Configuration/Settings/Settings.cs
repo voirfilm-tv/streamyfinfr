@@ -221,14 +221,6 @@ public class Settings
     [Display(Name = "Marlin server URL", Description = "Enter  url for your marlin server")]
     public Lockable<string>? marlinServerUrl { get; set; }
 
-    // Popular Lists
-    [NotNull]
-    [Display(Name = "Enable popular plugin")]
-    public Lockable<bool>? usePopularPlugin { get; set; } // = false;
-
-    [NotNull]
-    [Display(Name = "Popular plugin enabled collections", Description = "Enter the Ids of the collections you want this plugin to be enabled for")]
-    public Lockable<string[]>? mediaListCollectionIds { get; set; } // = false;
     // endregion Plugins
     
     // Misc.
