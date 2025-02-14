@@ -103,7 +103,7 @@ public class PluginConfiguration : BasePluginConfiguration
               {
                 sortBy = [ItemSortBy.Default],
                 sortOrder = [SortOrder.Ascending],
-                filters = [ItemFilter.IsFavorite],
+                filters = [ItemFilter.IsFavorite, ItemFilter.IsUnwatched],
                 includeItemTypes = [BaseItemKind.Series, BaseItemKind.Movie],
                 limit = 25,
               }
