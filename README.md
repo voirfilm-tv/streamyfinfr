@@ -3,7 +3,7 @@
 > A plugin for Jellyfin that allows a centralised configuration of Streamyfin.
 
 ### Required minimum versions
-- Streamyfin App version: **0.25.0** (currently in Beta) 
+- Streamyfin App version: **0.25.0** 
 - Plugin version: **0.33.0.0**
 
 ### What is this?
@@ -14,6 +14,7 @@ The Jellyfin Plugin for Streamyfin is a plugin you install into Jellyfin that ho
 - Choose the default languages 
 - Set download method and search provider
 - Customize homescreen
+- [Notifications](NOTIFICATIONS.md)
 - And more...
 
 ### Customize home screen

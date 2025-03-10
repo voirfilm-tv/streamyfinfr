@@ -1,6 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Jellyfin.Data.Enums;
 using Jellyfin.Plugin.Streamyfin.Configuration;
+using Jellyfin.Plugin.Streamyfin.PushNotifications;
+using Jellyfin.Plugin.Streamyfin.Storage;
 using MediaBrowser.Common.Api;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Dto;
@@ -50,6 +55,7 @@ public class StreamyfinController : ControllerBase
   private readonly ILibraryManager _libraryManager;
   private readonly IDtoService _dtoService;
   private readonly SerializationHelper _serializationHelperService;
+  private readonly NotificationHelper _notificationHelper;
 
   public StreamyfinController(
     ILoggerFactory loggerFactory,
@@ -57,7 +63,8 @@ public class StreamyfinController : ControllerBase
     IServerConfigurationManager config,
     IUserManager userManager,
     ILibraryManager libraryManager,
-    SerializationHelper serializationHelperService
+    SerializationHelper serializationHelper,
+    NotificationHelper notificationHelper
   )
   {
     _loggerFactory = loggerFactory;
@@ -66,7 +73,8 @@ public class StreamyfinController : ControllerBase
     _config = config;
     _userManager = userManager;
     _libraryManager = libraryManager;
-    _serializationHelperService = serializationHelperService;
+    _serializationHelperService = serializationHelper;
+    _notificationHelper = notificationHelper;
 
     _logger.LogInformation("StreamyfinController Loaded");
   }
@@ -99,8 +107,7 @@ public class StreamyfinController : ControllerBase
   [HttpGet("config")]
   [Authorize]
   [ProducesResponseType(StatusCodes.Status200OK)]
-  public ActionResult getConfig(
-  )
+  public ActionResult getConfig()
   {
     var config = StreamyfinPlugin.Instance!.Configuration.Config;
     return new JsonStringResult(_serializationHelperService.SerializeToJson(config));
@@ -136,21 +143,116 @@ public class StreamyfinController : ControllerBase
     };
   }
 
-  //[HttpGet("config.yaml")]
-  //[Authorize]
-  //[ProducesResponseType(StatusCodes.Status200OK)]
-  //public ActionResult<string> getConfigYamlTest(
-  // )
-  //{
-  //  var config = StreamyfinPlugin.Instance!.Configuration.Config;
-  // var serializer = new SerializerBuilder()
-  //.WithNamingConvention(CamelCaseNamingConvention.Instance)
-  //.ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
-  //.Build();
-  //  var yaml = serializer.Serialize(config);
-  //return yaml;
+  /// <summary>
+  /// Post expo push tokens for a specific user & device 
+  /// </summary>
+  /// <param name="deviceToken"></param>
+  [HttpPost("device")]
+  [Authorize]
+  [ProducesResponseType(StatusCodes.Status200OK)]
+  public ActionResult PostDeviceToken([FromBody, Required] DeviceToken deviceToken)
+  {
+    _logger.LogInformation("Posting device token for deviceId: {0}", deviceToken.DeviceId);
+    return new JsonResult(
+      _serializationHelperService.ToJson(StreamyfinPlugin.Instance!.Database.AddDeviceToken(deviceToken))
+    );
+  }
+  
+  /// <summary>
+  /// Delete expo push tokens for a specific device 
+  /// </summary>
+  /// <param name="deviceId"></param>
+  [HttpDelete("device/{deviceId}")]
+  [Authorize]
+  [ProducesResponseType(StatusCodes.Status200OK)]
+  public ActionResult DeleteDeviceToken([FromRoute, Required] Guid? deviceId)
+  {
+    if (deviceId == null) return BadRequest("Device id is required");
 
+    _logger.LogInformation("Deleting device token for deviceId: {0}", deviceId);
+    StreamyfinPlugin.Instance!.Database.RemoveDeviceToken((Guid) deviceId);
 
-  //}
+    return new OkResult();
+  }
 
+  /// <summary>
+  /// Forward notifications to expos push service using persisted device tokens
+  /// </summary>
+  /// <param name="notifications"></param>
+  /// <returns></returns>
+  [HttpPost("notification")]
+  [ProducesResponseType(StatusCodes.Status200OK)]
+  [ProducesResponseType(StatusCodes.Status400BadRequest)]
+  public ActionResult PostNotifications([FromBody, Required] List<Notification> notifications)
+  {
+    List<DeviceToken>? allTokens = null;
+    var validNotifications = notifications
+      .FindAll(n => !(string.IsNullOrWhiteSpace(n.Title) && string.IsNullOrWhiteSpace(n.Body)))
+      .Select(notification =>
+      {
+        List<DeviceToken> tokens = [];
+        var expoNotification = notification.ToExpoNotification();
+        
+        // Get tokens for target user
+        if (notification.UserId != null || !string.IsNullOrWhiteSpace(notification.Username))
+        {
+          Guid? userId = null;
+          
+          if (notification.UserId != null) 
+            userId = notification.UserId;
+          else if (notification.Username != null)
+            userId = _userManager.Users.ToList()
+              .Find(u => u.Username == notification.Username)?.Id;
+
+          if (userId != null)
+          {
+            _logger.LogInformation("Getting device tokens associated to userId: {0}", userId);
+            tokens.AddRange(
+              StreamyfinPlugin.Instance?.Database.GetUserDeviceTokens((Guid) userId)
+              ?? []
+            );
+          }
+        }
+        // Get all available tokens
+        else if (!notification.IsAdmin)
+        {
+          _logger.LogInformation("No user target provided. Getting all device tokens...");
+          allTokens ??= StreamyfinPlugin.Instance?.Database.GetAllDeviceTokens() ?? [];
+          tokens.AddRange(allTokens);
+          _logger.LogInformation("All known device tokens count: {0}", allTokens.Count);
+        }
+
+        // Get all available tokens for admins
+        if (notification.IsAdmin)
+        {
+          _logger.LogInformation("Notification being posted for admins");
+          tokens.AddRange(
+            _userManager.Users
+              .Where(u => u.HasPermission(PermissionKind.IsAdministrator))
+              .SelectMany(u =>
+                StreamyfinPlugin.Instance?.Database.GetUserDeviceTokens(u.Id)
+                ?? Enumerable.Empty<DeviceToken>()
+              ).ToList()
+          );
+        }
+
+        expoNotification.To = tokens.Select(t => t.Token).Distinct().ToList();
+
+        return expoNotification;
+      })
+      .Where(n => n.To.Count > 0)
+      .ToList();
+
+    _logger.LogInformation("Received {0} valid notifications", validNotifications.Count);
+
+    if (validNotifications.Count == 0)
+    {
+      return BadRequest("There are no devices available for notification.");
+    }
+
+    _logger.LogInformation("Posting notifications...");
+    var task = _notificationHelper.send(validNotifications);
+    task.Wait();
+    return new JsonResult(_serializationHelperService.ToJson(task.Result));
+  }
 }
