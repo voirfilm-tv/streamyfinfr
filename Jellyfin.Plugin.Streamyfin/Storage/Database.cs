@@ -1,30 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using Microsoft.Data.Sqlite;
 using Jellyfin.Plugin.Streamyfin.Storage.Enums;
-using Newtonsoft.Json;
+using Jellyfin.Plugin.Streamyfin.Storage.Models;
 
 namespace Jellyfin.Plugin.Streamyfin.Storage;
-
-public class DeviceToken
-{
-    [JsonProperty(PropertyName = "token")]
-    public string Token { get; set; }
-    [JsonProperty(PropertyName = "deviceId")]
-    public Guid DeviceId { get; set; }
-    [JsonProperty(PropertyName = "userId")]
-    public Guid UserId { get; set; }
-    [JsonProperty(PropertyName = "timestamp")]
-    public long Timestamp { get; set; }
-}
 
 public class Database : IDisposable
 {
     private readonly string name = "streamyfin_plugin.db";
-    private bool _disposed = false;
-    protected ReaderWriterLockSlim WriteLock { get; }
+    private bool _disposed;
+    private ReaderWriterLockSlim WriteLock { get; }
 
     public string DbFilePath { get; set; }
 
@@ -50,34 +39,38 @@ public class Database : IDisposable
         WriteLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
     }
 
-    public void Initialize(bool fileExists)
+    private void Initialize(bool fileExists)
     {
-        using (var connection = CreateConnection())
-        {
-            string[] queries =
-            {
-                $"create table if not exists {DeviceTokensTable} (DeviceId GUID PRIMARY KEY, Token TEXT NOT NULL, UserId GUID NOT NULL, Timestamp INTEGER NOT NULL)",
-                $"create index if not exists idx_{DeviceTokensTable}_user on {DeviceTokensTable}(UserId)",
-            };
+        using var connection = CreateConnection();
 
-            connection.RunQueries(queries);
-        }
+        string[] queries =
+        [
+            $"create table if not exists {DeviceTokensTable} (DeviceId GUID PRIMARY KEY, Token TEXT NOT NULL, UserId GUID NOT NULL, Timestamp INTEGER NOT NULL)",
+            $"create index if not exists idx_{DeviceTokensTable}_user on {DeviceTokensTable}(UserId)"
+        ];
+
+        connection.RunQueries(queries);
     }
 
+    /// <summary>
+    /// Gets all the expo push tokens for the devices a user is currently signed in to
+    /// </summary>
+    /// <param name="userId">Jellyfin user id</param>
+    /// <returns>List of DeviceToken</returns>
     public List<DeviceToken> GetUserDeviceTokens(Guid userId)
     {
         using (WriteLock.Read())
         {
-            using (var connection = CreateConnection(true))
+            var tokens = new List<DeviceToken>();
+            using var connection = CreateConnection(true);
+
+            using (var statement = connection.PrepareStatement($"select * from {DeviceTokensTable} where UserId = @UserId;"))
             {
-                List<DeviceToken> tokens = new List<DeviceToken>();
-                using (var statement = connection.PrepareStatement($"select * from {DeviceTokensTable} where UserId = @UserId;"))
-                {
-                    statement.TryBind("@UserId", userId);
-                    
-                    foreach (var row in statement.ExecuteQuery())
-                    {
-                        tokens.Add(
+                statement.TryBind("@UserId", userId);
+
+                tokens.AddRange(
+                    collection: statement.ExecuteQuery()
+                        .Select(row =>
                             new DeviceToken
                             {
                                 DeviceId = row.GetGuid(0),
@@ -85,121 +78,129 @@ public class Database : IDisposable
                                 UserId = row.GetGuid(2),
                                 Timestamp = row.GetInt64(3)
                             }
-                        );
-                    }
-                }
-
-                return tokens;
+                        )
+                );
             }
+
+            return tokens;
         }
     }
     
+    /// <summary>
+    /// Gets all known device tokens
+    /// </summary>
+    /// <returns>List of DeviceToken</returns>
     public List<DeviceToken> GetAllDeviceTokens()
     {
         using (WriteLock.Read())
         {
-            using (var connection = CreateConnection(true))
+            List<DeviceToken> tokens = [];
+            using var connection = CreateConnection(true);
+
+            using (var statement = connection.PrepareStatement($"select * from {DeviceTokensTable};"))
             {
-                List<DeviceToken> tokens = new List<DeviceToken>();
-                using (var statement = connection.PrepareStatement($"select * from {DeviceTokensTable};"))
-                {
-                    foreach (var row in statement.ExecuteQuery())
-                    {
-                        tokens.Add(
+                tokens.AddRange(
+                    collection: statement.ExecuteQuery()
+                        .Select(row => 
                             new DeviceToken
                             {
-                                DeviceId = row.GetGuid(0),
-                                Token = row.GetString(1),
-                                UserId = row.GetGuid(2),
+                                DeviceId = row.GetGuid(0), 
+                                Token = row.GetString(1), 
+                                UserId = row.GetGuid(2), 
                                 Timestamp = row.GetInt64(3)
                             }
-                        );
-                    }
-                }
-
-                return tokens;
+                        )
+                    );
             }
+
+            return tokens;
         }
     }
 
-    public DeviceToken GetDeviceTokenForDeviceId(Guid deviceId)
+    /// <summary>
+    /// Gets the specific expo push token for a device
+    /// </summary>
+    /// <param name="deviceId">Device id generated from streamyfin</param>
+    /// <returns>DeviceToken?</returns>
+    public DeviceToken? GetDeviceTokenForDeviceId(Guid deviceId)
     {
         using (WriteLock.Read())
         {
-            using (var connection = CreateConnection(true))
-            {
-                using (var statement =
-                       connection.PrepareStatement($"select * from {DeviceTokensTable} where DeviceId = @DeviceId;"))
-                {
-                    statement.TryBind("@DeviceId", deviceId);
-                    foreach (var row in statement.ExecuteQuery())
-                    {
-                        return new DeviceToken
-                        {
-                            DeviceId = row.GetGuid(0),
-                            Token = row.GetString(1),
-                            UserId = row.GetGuid(2),
-                            Timestamp = row.GetInt64(3)
-                        };
-                    }
+            using var connection = CreateConnection(true);
 
-                    return null;
-                }
+            using (var statement = connection.PrepareStatement($"select * from {DeviceTokensTable} where DeviceId = @DeviceId;"))
+            {
+                statement.TryBind("@DeviceId", deviceId);
+                return statement.ExecuteQuery()
+                    .Select(row => 
+                        new DeviceToken
+                        {
+                            DeviceId = row.GetGuid(0), 
+                            Token = row.GetString(1), 
+                            UserId = row.GetGuid(2), 
+                            Timestamp = row.GetInt64(3)
+                        }
+                    ).FirstOrDefault();
             }
         }
     }
 
+    /// <summary>
+    /// Adds a device token, unique to every deviceId.
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns>DeviceToken</returns>
     public DeviceToken AddDeviceToken(DeviceToken token)
     {
         using (WriteLock.Write())
         {
-            using (var connection = CreateConnection(true))
+            using var connection = CreateConnection();
+            return connection.RunInTransaction(db =>
             {
-                return connection.RunInTransaction(db =>
+                long timestamp = DateTime.UtcNow.ToFileTime();
+
+                using (var statement = db.PrepareStatement($"delete from {DeviceTokensTable} where DeviceId=@DeviceId;"))
                 {
-                    long timestamp = DateTime.UtcNow.ToFileTime();
+                    statement.TryBind("@DeviceId", token.DeviceId);
+                    statement.ExecuteNonQuery();
+                }
 
-                    using (var statement = db.PrepareStatement($"delete from {DeviceTokensTable} where DeviceId=@DeviceId;"))
-                    {
-                        statement.TryBind("@DeviceId", token.DeviceId);
-                        statement.ExecuteNonQuery();
-                    }
+                using (var statement = db.PrepareStatement($"insert into {DeviceTokensTable}(DeviceId, Token, UserId, Timestamp) values (@DeviceId, @Token, @UserId, @Timestamp);"))
+                {
+                    statement.TryBind("@DeviceId", token.DeviceId);
+                    statement.TryBind("@Token", token.Token);
+                    statement.TryBind("@UserId", token.UserId);
+                    statement.TryBind("@Timestamp", timestamp);
+                    statement.ExecuteNonQuery();
+                }
 
-                    using (var statement = db.PrepareStatement($"insert into {DeviceTokensTable}(DeviceId, Token, UserId, Timestamp) values (@DeviceId, @Token, @UserId, @Timestamp);"))
-                    {
-                        statement.TryBind("@DeviceId", token.DeviceId);
-                        statement.TryBind("@Token", token.Token);
-                        statement.TryBind("@UserId", token.UserId);
-                        statement.TryBind("@Timestamp", timestamp);
-                        statement.ExecuteNonQuery();
-                    }
-
-                    token.Timestamp = timestamp;
-                    return token;
-                });
-            }
+                token.Timestamp = timestamp;
+                return token;
+            });
         }
     }
 
+    /// <summary>
+    /// Removes a device token using the device id
+    /// </summary>
+    /// <param name="deviceId">Device id generated from streamyfin</param>
+    /// <returns>DeviceToken</returns>
     public void RemoveDeviceToken(Guid deviceId)
     {
         using (WriteLock.Write())
         {
-            using (var connection = CreateConnection())
+            using var connection = CreateConnection();
+            connection.RunInTransaction(db =>
             {
-                connection.RunInTransaction(db =>
-                {
-                    using (var statement = db.PrepareStatement($"delete from {DeviceTokensTable} where DeviceId=@DeviceId;"))
-                    {
-                        statement.TryBind("@DeviceId", deviceId);
-                        statement.ExecuteNonQuery();
-                    }
-                });
-            }
+                using var statement = db.PrepareStatement($"delete from {DeviceTokensTable} where DeviceId=@DeviceId;");
+
+                statement.TryBind("@DeviceId", deviceId);
+                statement.ExecuteNonQuery();
+            });
         }
     }
 
-    protected SqliteConnection CreateConnection(bool isReadOnly = false)
+    private SqliteConnection CreateConnection(bool isReadOnly = false)
     {
         var connection = new SqliteConnection($"Filename={DbFilePath}");
         connection.Open();
@@ -234,20 +235,19 @@ public class Database : IDisposable
         return connection;
     }
 
+    /// <summary>
+    /// Clear up all tables
+    /// </summary>
     public void Purge()
     {
         using (WriteLock.Write())
         {
-            using (var connection = CreateConnection(true))
+            using var connection = CreateConnection();
+            connection.RunInTransaction(db =>
             {
-                connection.RunInTransaction(db =>
-                {
-                    using (var statement = db.PrepareStatement($"delete from {DeviceTokensTable};"))
-                    {
-                        statement.ExecuteNonQuery();
-                    }
-                });
-            }
+                using var statement = db.PrepareStatement($"delete from {DeviceTokensTable};");
+                statement.ExecuteNonQuery();
+            });
         }
     }
 

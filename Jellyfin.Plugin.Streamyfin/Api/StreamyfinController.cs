@@ -5,7 +5,7 @@ using System.Linq;
 using Jellyfin.Data.Enums;
 using Jellyfin.Plugin.Streamyfin.Configuration;
 using Jellyfin.Plugin.Streamyfin.PushNotifications;
-using Jellyfin.Plugin.Streamyfin.Storage;
+using Jellyfin.Plugin.Streamyfin.Storage.Models;
 using MediaBrowser.Common.Api;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Dto;
@@ -181,6 +181,7 @@ public class StreamyfinController : ControllerBase
   /// <param name="notifications"></param>
   /// <returns></returns>
   [HttpPost("notification")]
+  [Authorize]
   [ProducesResponseType(StatusCodes.Status200OK)]
   [ProducesResponseType(StatusCodes.Status400BadRequest)]
   public ActionResult PostNotifications([FromBody, Required] List<Notification> notifications)

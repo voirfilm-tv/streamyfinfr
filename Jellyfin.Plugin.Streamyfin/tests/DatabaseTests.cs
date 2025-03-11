@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using Jellyfin.Plugin.Streamyfin.Storage;
+using Jellyfin.Plugin.Streamyfin.Storage.Models;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -32,16 +33,15 @@ public class CleanupDatabaseBeforeAndAfter: BeforeAfterTestAttribute
 /// <summary>
 /// Ensure [Jellyfin.Plugin.Streamyfin.Storage.Database] can properly run transactions as expected
 /// </summary>
+[CleanupDatabaseBeforeAndAfter]
 public class DatabaseTests(ITestOutputHelper output): IDisposable
 {
     private readonly Database db = new(Directory.GetCurrentDirectory());
-    private readonly SerializationHelper _serializationHelper = new();
 
     /// <summary>
     /// Ensure when adding a device token for a specific device that we delete any previous old token first 
     /// </summary>
     [Fact]
-    [CleanupDatabaseBeforeAndAfter]
     public void TestAddingDeviceTokenForTheSameDevice()
     {
         var deviceId = Guid.NewGuid();
@@ -78,10 +78,8 @@ public class DatabaseTests(ITestOutputHelper output): IDisposable
     /// Make sure we are actually recording each token 
     /// </summary>
     [Fact]
-    [CleanupDatabaseBeforeAndAfter]
     public void TestAllTokensPersistSeparately()
     {
-        
         for (int i = 0; i < 5; i++)
         {
             db.AddDeviceToken(

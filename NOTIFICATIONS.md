@@ -1,4 +1,4 @@
-# Notifications
+# Streamyfin client notifications
 
 Our plugin can consume any event and forward them to your streamyfin users!
 
@@ -6,11 +6,19 @@ Examples:
 - [Jellyfin](#Jellyfin)
 - [Jellyseerr](#Jellyseerr)
 
-## Notification endpoint
+## Endpoint (Authorization required)
 
 `http(s)://server.instance/Streamyfin/notification`
 
-## Notification template
+This endpoint requires two headers:
+
+key: `Content-Type`<br>
+value: `application/json`
+
+key: `Authorization`<br>
+value: `MediaBrowser Token="{apiKey}"`
+
+## Template
 ```json
 [
   {
@@ -26,7 +34,7 @@ Examples:
 
 ---
 
-# Notification examples
+# Examples
 
 ## Jellyfin
 You can use the [jellyfin-webhook-plugin](https://github.com/jellyfin/jellyfin-plugin-webhook) to create a notification based on any event they offer.
@@ -54,8 +62,8 @@ Admin is in the title since you probably don't want all your users getting this 
 ```json
 [
     {
-        "title": "{{{Username}}} session started",
-        "body": "Now watching {{{Name}}}",
+        "title": "Session started",
+        "body": "{{{NotificationUsername}}} now watching",
         "isAdmin": true
     }
 ]
