@@ -40,4 +40,3 @@ fs.readFile(csprojPath, 'utf8', (err, data) => {
     });
 });
 
-return incrementVersion:
