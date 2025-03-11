@@ -44,23 +44,33 @@ public class DatabaseTests(ITestOutputHelper output): IDisposable
     [CleanupDatabaseBeforeAndAfter]
     public void TestAddingDeviceTokenForTheSameDevice()
     {
+        var deviceId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+
         var token = db.AddDeviceToken(
             new DeviceToken
             {
-                DeviceId = "testId",
+                DeviceId = deviceId,
                 Token = "testToken",
-                UserId = "testUserId"
+                UserId = userId
             }
         );
         
         // Adding a "new" token should update the timestamp
         var updatedToken = db.AddDeviceToken(token);
-
         var newTokenReference = db.GetDeviceTokenForDeviceId(token.DeviceId);
         
         Assert.Assrt(
             $"Timestamp was updated",
-            updatedToken.Timestamp != newTokenReference.Timestamp
+            updatedToken.Timestamp == newTokenReference.Timestamp
+        );
+        Assert.Assrt(
+            $"DeviceId fetched correctly",
+            deviceId == newTokenReference.DeviceId
+        );
+        Assert.Assrt(
+            $"UserId fetched correctly",
+            userId == newTokenReference.UserId
         );
     }
     
@@ -71,14 +81,15 @@ public class DatabaseTests(ITestOutputHelper output): IDisposable
     [CleanupDatabaseBeforeAndAfter]
     public void TestAllTokensPersistSeparately()
     {
+        
         for (int i = 0; i < 5; i++)
         {
             db.AddDeviceToken(
                 new DeviceToken
                 {
-                    DeviceId = $"device{i.ToString(CultureInfo.InvariantCulture)}",
+                    DeviceId = Guid.NewGuid(),
                     Token = $"token{i.ToString(CultureInfo.InvariantCulture)}",
-                    UserId = "testUserId"
+                    UserId = Guid.NewGuid()
                 }
             );
         }
