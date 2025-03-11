@@ -2,11 +2,10 @@ export VERSION := $(shell git describe --tags --abbrev=0 | awk -F. -v OFS=. '{ $
 export GITHUB_REPO := streamyfin/jellyfin-plugin-streamyfin
 export FILE := streamyfin-${VERSION}.zip
 
-test:
+print:
 	echo ${VERSION}
-	node scripts/update-version.js
-  
-k: test
+
+k: zip
 
 zip:
 	mkdir -p ./dist
@@ -35,4 +34,4 @@ push-manifest:
 	git commit -m 'new release: ${VERSION}' manifest.json
 	git push origin main
 
-release: update-version build zip create-tag create-gh-release update-manifest push-manifest
+release: print update-version build zip create-tag create-gh-release update-manifest push-manifest
