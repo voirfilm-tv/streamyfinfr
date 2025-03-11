@@ -1,10 +1,11 @@
-export VERSION := ${VERSION}
-export GITHUB_REPO := streamyfin/jellyfin-plugin-streamyfin
-export FILE := streamyfin-${VERSION}.zip
+VERSION := $(shell git describe --tags --abbrev=0 | awk -F. -v OFS=. '{ $$2 = $$2 + 1; $$3 = 0; $$4 = 0; print }')
+GITHUB_REPO := streamyfin/jellyfin-plugin-streamyfin
+FILE := streamyfin-${VERSION}.zip
 
 test:
-	printenv | grep VERSION
-	dotnet test
+	echo ${VERSION}
+  
+k: test
 
 zip:
 	mkdir -p ./dist
@@ -30,7 +31,7 @@ build:
 	dotnet build --configuration Release
   
 push-manifest:
-	git commit -m 'new release' manifest.json
+	git commit -m 'new release: ${VERSION}' manifest.json
 	git push origin main
 
 release: update-version build zip create-tag create-gh-release update-manifest push-manifest

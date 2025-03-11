@@ -1,9 +1,7 @@
 name: "Create release"
 
 on:
-  push:
-    tags:
-    - '*'
+  workflow_dispatch::
 
 permissions:
   pull-requests: write
@@ -15,11 +13,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        id: lint_pr_title
         # env:
         #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set env
-        run: echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
       - name: build and release application
-        run: make release
-      - uses: stefanzweifel/git-auto-commit-action@v5
+        run: |
+          git config --global user.name 'lostb1t'
+          git config --global user.email 'coding-mosses0z@icloud.com'
+          make release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
