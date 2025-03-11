@@ -17,7 +17,7 @@ fs.readFile(csprojPath, 'utf8', (err, data) => {
 
     let newAssemblyVersion = null;
     let newFileVersion = null;
-
+    console.log(VERSION);
     // Use regex to find and increment versions
     const updatedData = data.replace(/<AssemblyVersion>(.*?)<\/AssemblyVersion>/, (match, version) => {
         newAssemblyVersion = VERSION;

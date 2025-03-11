@@ -1,9 +1,10 @@
-VERSION := $(shell git describe --tags --abbrev=0 | awk -F. -v OFS=. '{ $$2 = $$2 + 1; $$3 = 0; $$4 = 0; print }')
-GITHUB_REPO := streamyfin/jellyfin-plugin-streamyfin
-FILE := streamyfin-${VERSION}.zip
+export VERSION := $(shell git describe --tags --abbrev=0 | awk -F. -v OFS=. '{ $$2 = $$2 + 1; $$3 = 0; $$4 = 0; print }')
+export GITHUB_REPO := streamyfin/jellyfin-plugin-streamyfin
+export FILE := streamyfin-${VERSION}.zip
 
 test:
 	echo ${VERSION}
+	node scripts/update-version.js
   
 k: test
 
