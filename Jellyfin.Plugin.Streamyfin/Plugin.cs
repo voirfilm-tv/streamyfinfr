@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Jellyfin.Plugin.Streamyfin.Configuration;
+using Jellyfin.Plugin.Streamyfin.Storage;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Plugins;
@@ -22,7 +23,10 @@ public class StreamyfinPlugin : BasePlugin<PluginConfiguration>, IHasWebPages
         : base(applicationPaths, xmlSerializer)
     {
         Instance = this;
+        Database = new Database(applicationPaths.DataPath);
     }
+    
+    public Database Database { get; }
 
     /// <inheritdoc />
     public override string Name => "Streamyfin";

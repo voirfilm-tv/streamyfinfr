@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Jellyfin.Data.Enums;
@@ -15,6 +16,7 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using JsonSchemaGenerator = NJsonSchema.Generation.JsonSchemaGenerator;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using NewtonsoftJsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 
 namespace Jellyfin.Plugin.Streamyfin;
@@ -26,6 +28,7 @@ public class SerializationHelper
 {
     private readonly IDeserializer _deserializer;
     private readonly ISerializer _yamlSerializer;
+    private readonly NewtonsoftJsonSerializer _jsonSerializer;
 
     public SerializationHelper()
     {
@@ -38,6 +41,8 @@ public class SerializationHelper
         _deserializer = new DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .Build();
+
+        _jsonSerializer = NewtonsoftJsonSerializer.CreateDefault();
     }
 
     private JsonSerializerOptions GetJsonSerializerOptions()
@@ -80,6 +85,18 @@ public class SerializationHelper
     /// </summary>
     public string SerializeToJson<T>(T item) => 
         JsonSerializer.Serialize(item, GetJsonSerializerOptions());
+
+    /// <summary>
+    /// Serialize to Json with Streamyfin expected using copied options
+    /// </summary>
+    public string ToJson<T>(T item)
+    {
+        var output = new StringWriter();
+        _jsonSerializer.Serialize(output, item);
+        var outputAsString = output.ToString();
+        output.Dispose();
+        return outputAsString;
+    }
 
     /// <summary>
     /// Deserialize Json/Yaml

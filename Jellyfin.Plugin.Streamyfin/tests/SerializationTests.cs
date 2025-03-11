@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Jellyfin.Data.Enums;
 using Jellyfin.Plugin.Streamyfin.Configuration;
 using Jellyfin.Plugin.Streamyfin.Configuration.Settings;
@@ -192,6 +193,40 @@ public class SerializationTests(ITestOutputHelper output)
                 locked: false
                 value: Two
             """
+        );
+    }
+    
+    /// <summary>
+    /// Ensures array of notifications are deserialized correctly
+    /// </summary>
+    [Fact]
+    public void DeserializeNotification()
+    {
+        var notification = _serializationHelper.Deserialize<List<Notification>>(
+            """
+            [
+                {
+                    "title": "Test Title",
+                    "body": "Test Body",
+                    "userId": "2c585c0706ac46779a2c38ca896b556f"
+                }
+            ]
+            """
+        )[0];
+        
+        Assert.Assrt(
+            msg: "title deserialized",
+            notification.Title == "Test Title"
+        );
+        
+        Assert.Assrt(
+            msg: "body deserialized",
+            notification.Body == "Test Body"
+        );
+
+        Assert.Assrt(
+            msg: "guid deserialized",
+            notification.UserId?.ToString("N") == "2c585c0706ac46779a2c38ca896b556f"
         );
     }
 
