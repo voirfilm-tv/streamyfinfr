@@ -183,9 +183,17 @@ public class StreamyfinController : ControllerBase
   [HttpPost("notification")]
   [Authorize]
   [ProducesResponseType(StatusCodes.Status200OK)]
-  [ProducesResponseType(StatusCodes.Status400BadRequest)]
+  [ProducesResponseType(StatusCodes.Status202Accepted)]
   public ActionResult PostNotifications([FromBody, Required] List<Notification> notifications)
   {
+    var db = StreamyfinPlugin.Instance?.Database;
+
+    if (db?.TotalDevicesCount() == 0)
+    {
+      _logger.LogInformation("There are currently no devices setup to receive push notifications");
+      return new AcceptedResult();
+    }
+
     List<DeviceToken>? allTokens = null;
     var validNotifications = notifications
       .FindAll(n => !(string.IsNullOrWhiteSpace(n.Title) && string.IsNullOrWhiteSpace(n.Body)))
@@ -209,7 +217,7 @@ public class StreamyfinController : ControllerBase
           {
             _logger.LogInformation("Getting device tokens associated to userId: {0}", userId);
             tokens.AddRange(
-              StreamyfinPlugin.Instance?.Database.GetUserDeviceTokens((Guid) userId)
+              db?.GetUserDeviceTokens((Guid) userId)
               ?? []
             );
           }
@@ -218,7 +226,7 @@ public class StreamyfinController : ControllerBase
         else if (!notification.IsAdmin)
         {
           _logger.LogInformation("No user target provided. Getting all device tokens...");
-          allTokens ??= StreamyfinPlugin.Instance?.Database.GetAllDeviceTokens() ?? [];
+          allTokens ??= db?.GetAllDeviceTokens() ?? [];
           tokens.AddRange(allTokens);
           _logger.LogInformation("All known device tokens count: {0}", allTokens.Count);
         }
@@ -231,8 +239,7 @@ public class StreamyfinController : ControllerBase
             _userManager.Users
               .Where(u => u.HasPermission(PermissionKind.IsAdministrator))
               .SelectMany(u =>
-                StreamyfinPlugin.Instance?.Database.GetUserDeviceTokens(u.Id)
-                ?? Enumerable.Empty<DeviceToken>()
+                db?.GetUserDeviceTokens(u.Id) ?? Enumerable.Empty<DeviceToken>()
               ).ToList()
           );
         }
@@ -248,7 +255,7 @@ public class StreamyfinController : ControllerBase
 
     if (validNotifications.Count == 0)
     {
-      return BadRequest("There are no devices available for notification.");
+      return new AcceptedResult();
     }
 
     _logger.LogInformation("Posting notifications...");

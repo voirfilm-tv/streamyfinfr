@@ -179,6 +179,25 @@ public class Database : IDisposable
             });
         }
     }
+    
+    /// <summary>
+    /// Get the total record count for DeviceTokensTable
+    /// </summary>
+    /// <returns>Total count for tokens</returns>
+    public Int64 TotalDevicesCount()
+    {
+        using (WriteLock.Read())
+        {
+            using var connection = CreateConnection();
+            return connection.RunInTransaction(db =>
+            {
+                using (var statement = db.PrepareStatement($"select count(*) from {DeviceTokensTable};"))
+                {
+                    return (Int64)(statement.ExecuteScalar() ?? 0);
+                }
+            });
+        }
+    }
 
     /// <summary>
     /// Removes a device token using the device id

@@ -92,11 +92,11 @@ public class DatabaseTests(ITestOutputHelper output): IDisposable
             );
         }
 
-        var tokens = db.GetAllDeviceTokens();
+        var tokens = db.TotalDevicesCount();
 
         Assert.Assrt(
             $"All tokens persisted",
-            tokens.Count == 5
+            tokens == 5
         );
     }
 
