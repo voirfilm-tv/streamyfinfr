@@ -76,17 +76,17 @@ Admin is in the title since you probably don't want all your users getting this 
 ```json
 [
     {
+        {{#if_equals ItemType 'Movie'}}
+          "title": "{{{Name}}} ({{Year}}) added",
+          "body": "Watch movie now"
+        {{else}}
         {{#if_equals ItemType 'Season'}}
           "title": "{{{SeriesName}}} season added",
-          "body": "Watch '{{{Name}}}' now"
-        {{else}}
-          {{#if_equals ItemType 'Episode'}}
-            "title": "{{{SeriesName}}} S{{SeasonNumber00}}E{{EpisodeNumber00}} added",
-            "body": "Watch episode '{{{Name}}}' now"
-          {{else}}
-            "title": "{{{Name}}} ({{Year}}) added",
-            "body": "Watch movie now"
-          {{/if_equals}}
+          "body": "Watch season '{{{Name}}}' now"
+        {{/if_equals}}
+        {{#if_equals ItemType 'Episode'}}
+          "title": "{{{SeriesName}}} S{{SeasonNumber00}}E{{EpisodeNumber00}} added",
+          "body": "Watch episode '{{{Name}}}' now"
         {{/if_equals}}
     }
 ]
