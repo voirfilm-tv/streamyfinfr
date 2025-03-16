@@ -79,7 +79,7 @@ Admin is in the title since you probably don't want all your users getting this 
         {{#if_equals ItemType 'Movie'}}
           "title": "{{{Name}}} ({{Year}}) added",
           "body": "Watch movie now"
-        {{else}}
+        {{/if_equals}}
         {{#if_equals ItemType 'Season'}}
           "title": "{{{SeriesName}}} season added",
           "body": "Watch season '{{{Name}}}' now"
