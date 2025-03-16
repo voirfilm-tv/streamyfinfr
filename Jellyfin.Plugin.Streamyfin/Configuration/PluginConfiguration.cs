@@ -35,7 +35,24 @@ public class PluginConfiguration : BasePluginConfiguration
 
   public static Config DefaultConfig() => new()
   {
+    notifications = DefaultNotifications(),
     settings = DefaultSettings()
+  };
+
+  public static Notifications.Notifications DefaultNotifications() => new()
+  {
+    SessionStarted = new()
+    {
+      Enabled = true
+    },
+    PlaybackStarted = new()
+    {
+      Enabled = true
+    },
+    UserLockedOut = new ()
+    {
+      Enabled = true
+    }
   };
 
   public static Settings.Settings DefaultSettings() => new()

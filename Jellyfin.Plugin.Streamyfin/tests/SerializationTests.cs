@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Jellyfin.Data.Enums;
 using Jellyfin.Plugin.Streamyfin.Configuration;
 using Jellyfin.Plugin.Streamyfin.Configuration.Settings;
+using Jellyfin.Plugin.Streamyfin.PushNotifications.models;
+using MediaBrowser.Controller.Entities.Movies;
 using Xunit;
 using Xunit.Abstractions;
 using Assert = ICU4N.Impl.Assert;

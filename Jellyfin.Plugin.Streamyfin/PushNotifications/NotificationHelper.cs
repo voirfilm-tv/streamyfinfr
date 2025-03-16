@@ -1,27 +1,109 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Jellyfin.Data.Entities;
+using Jellyfin.Plugin.Streamyfin.Extensions;
 using Jellyfin.Plugin.Streamyfin.PushNotifications.models;
+using MediaBrowser.Controller.Library;
+using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.Streamyfin.PushNotifications;
 
 public class NotificationHelper
 {
+    private readonly ILogger<NotificationHelper>? _logger;
     private readonly SerializationHelper _serializationHelper;
-    
-    public NotificationHelper(SerializationHelper serializationHelper)
+    private readonly IUserManager? _userManager;
+
+    public NotificationHelper(
+        ILoggerFactory? loggerFactory,
+        IUserManager? userManager,
+        SerializationHelper serializationHelper)
     {
+        _logger = loggerFactory?.CreateLogger<NotificationHelper>();
+        _userManager = userManager;
         _serializationHelper = serializationHelper;
     }
 
-    public async Task<ExpoNotificationResponse?> send(List<ExpoNotificationRequest> requests) =>
-        await SendNotificationToExpo(_serializationHelper.ToJson(requests));
+    /// <summary>
+    /// Ability to send a notification directly to jellyfin admins
+    /// </summary>
+    /// <param name="notification"></param>
+    /// <returns></returns>
+    public async Task<ExpoNotificationResponse?> SendToAdmins(Notification notification) =>
+        await SendToAdmins([notification]).ConfigureAwait(false);
+
+    /// <summary>
+    /// Ability to send a batch of notifications directly to jellyfin admins
+    /// </summary>
+    /// <param name="notification"></param>
+    /// <returns></returns>
+    public async Task<ExpoNotificationResponse?> SendToAdmins(List<Notification> notifications)
+    {
+        var adminTokens = _userManager.GetAdminTokens();
+
+        // No admin tokens found.
+        if (adminTokens.Count == 0)
+        {
+            return await Task.FromResult<ExpoNotificationResponse?>(null).ConfigureAwait(false);
+        }
+
+        var expoNotifications = notifications.Select(notification =>
+        {
+            List<String> userDeviceTokens = [];
+            var expoNotification = notification.ToExpoNotification();
+            
+            // Also send to target user if specified
+            if (notification.UserId.HasValue)
+            {
+                userDeviceTokens = StreamyfinPlugin.Instance?.Database
+                    .GetUserDeviceTokens(notification.UserId.Value)
+                    .Select(token => token.Token)
+                    .ToList() ?? [];
+            }
+
+            expoNotification.To = adminTokens.Concat(userDeviceTokens).Distinct().ToList();
+            return expoNotification;
+        }).ToList();
+
+        return await Send(expoNotifications).ConfigureAwait(false);
+    }
+
+    public async Task<ExpoNotificationResponse?> SendToAdmins(
+        List<ExpoNotificationRequest> notifications,
+        List<Guid>? excludedUsersIds)
+    {
+        var excludedIds = excludedUsersIds ?? Array.Empty<Guid>().ToList(); 
+        var adminTokens = _userManager.GetAdminDeviceTokens()
+            .FindAll(deviceToken => !excludedIds.Contains(deviceToken.UserId))
+            .Select(deviceToken => deviceToken.Token)
+            .ToList();
+
+        // No admin tokens found.
+        if (adminTokens.Count == 0)
+        {
+            return await Task.FromResult<ExpoNotificationResponse?>(null).ConfigureAwait(false);
+        }
+
+        var expoNotifications = notifications
+            .Select(notification =>
+            {
+                notification.To = adminTokens;
+                return notification;
+            }).ToList();
+
+        return await Send(expoNotifications).ConfigureAwait(false);
+    }
+
+    public async Task<ExpoNotificationResponse?> Send(List<ExpoNotificationRequest> notifications) =>
+        await SendNotificationToExpo(_serializationHelper.ToJson(notifications)).ConfigureAwait(false);
     
-    public async Task<ExpoNotificationResponse?> send(ExpoNotificationRequest request) =>
-        await SendNotificationToExpo(_serializationHelper.ToJson(request));
+    public async Task<ExpoNotificationResponse?> Send(ExpoNotificationRequest notification) =>
+        await SendNotificationToExpo(_serializationHelper.ToJson(notification)).ConfigureAwait(false);
 
     private async Task<ExpoNotificationResponse?> SendNotificationToExpo(string serializedRequest)
     {

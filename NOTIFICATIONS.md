@@ -2,11 +2,26 @@
 
 Our plugin can consume any event and forward them to your streamyfin users!
 
-Examples:
+There are currently a few jellyfin events directly supported by our plugin!
+
+Events:
+- Session Started (Admin only)
+- User Locked out (Admin + user who was locked out)
+- Playback started (Admin only)
+
+These can be enabled/disabled inside our plugins page as a setting!
+
+
+## Custom webhook notifications
+If you want to directly start using the notification endpoint with other services, take a look at our examples on how to do so!
+
+Custom webhook examples:
 - [Jellyfin](#Jellyfin)
 - [Jellyseerr](#Jellyseerr)
 
-## Endpoint (Authorization required)
+---
+
+# Endpoint (Authorization required)
 
 `http(s)://server.instance/Streamyfin/notification`
 
@@ -32,6 +47,9 @@ value: `MediaBrowser Token="{apiKey}"`
 ]
 ```
 
+## Notifying all users
+To do this all you have to do is populate title & body! Other fields are not required!
+
 ---
 
 # Examples
@@ -48,26 +66,9 @@ You'll want to create a separate webhook destination for each event so we can av
 
 ### examples
 
-- [Sessions Starting](#admin-notification-when-a-session-starts)
 - [Item Added](#item-added-notification)
-- [User locked out](#user-locked-out)
 
-**We are currently looking into using these notifications directly without us having to forward these to ourselves** 
-
-### (Admin) notification when a session starts
-Admin is in the title since you probably don't want all your users getting this notification
-- Select event "Session Start"
-- Paste in template below
-
-```json
-[
-    {
-        "title": "Session started",
-        "body": "{{{NotificationUsername}}} now watching",
-        "isAdmin": true
-    }
-]
-```
+**We are currently looking into using these notifications directly without us having to forward these to ourselves**
 
 ### Item added notification
 - Select event "Item Added"
@@ -89,22 +90,6 @@ Admin is in the title since you probably don't want all your users getting this 
           "body": "Watch episode '{{{Name}}}' now"
         {{/if_equals}}
     }
-]
-```
-
-
-### User locked out
-- Select event "User Locked Out"
-- Paste in template below
-
-```json
-[
-  {
-    "title": "{{{User}}} is now locked out",
-    "body": "Contact admin for reset",
-    "userId": "{{{UserId}}}",
-    "isAdmin": true
-  }
 ]
 ```
 

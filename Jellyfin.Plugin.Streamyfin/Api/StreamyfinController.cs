@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Jellyfin.Data.Enums;
 using Jellyfin.Plugin.Streamyfin.Configuration;
+using Jellyfin.Plugin.Streamyfin.Extensions;
 using Jellyfin.Plugin.Streamyfin.PushNotifications;
 using Jellyfin.Plugin.Streamyfin.Storage.Models;
 using MediaBrowser.Common.Api;
@@ -206,13 +206,15 @@ public class StreamyfinController : ControllerBase
         if (notification.UserId != null || !string.IsNullOrWhiteSpace(notification.Username))
         {
           Guid? userId = null;
-          
-          if (notification.UserId != null) 
-            userId = notification.UserId;
-          else if (notification.Username != null)
-            userId = _userManager.Users.ToList()
-              .Find(u => u.Username == notification.Username)?.Id;
 
+          if (notification.UserId != null)
+          {
+            userId = notification.UserId;
+          } 
+          else if (notification.Username != null)
+          {
+            userId = _userManager.Users.ToList().Find(u => u.Username == notification.Username)?.Id;
+          }
           if (userId != null)
           {
             _logger.LogInformation("Getting device tokens associated to userId: {0}", userId);
@@ -235,13 +237,7 @@ public class StreamyfinController : ControllerBase
         if (notification.IsAdmin)
         {
           _logger.LogInformation("Notification being posted for admins");
-          tokens.AddRange(
-            _userManager.Users
-              .Where(u => u.HasPermission(PermissionKind.IsAdministrator))
-              .SelectMany(u =>
-                db?.GetUserDeviceTokens(u.Id) ?? Enumerable.Empty<DeviceToken>()
-              ).ToList()
-          );
+          tokens.AddRange(_userManager.GetAdminDeviceTokens());
         }
 
         expoNotification.To = tokens.Select(t => t.Token).Distinct().ToList();
@@ -259,7 +255,7 @@ public class StreamyfinController : ControllerBase
     }
 
     _logger.LogInformation("Posting notifications...");
-    var task = _notificationHelper.send(validNotifications);
+    var task = _notificationHelper.Send(validNotifications);
     task.Wait();
     return new JsonResult(_serializationHelperService.ToJson(task.Result));
   }

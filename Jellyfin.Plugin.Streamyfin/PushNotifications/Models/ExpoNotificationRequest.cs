@@ -34,7 +34,7 @@ public class ExpoNotificationRequest
     /// "Message Too Big" error.
     /// </summary>
     [JsonProperty("data", DefaultValueHandling = DefaultValueHandling.Ignore)]
-    public object Data { get; set; }
+    public object? Data { get; set; }
 
     /// <summary>
     /// The title to display in the notification. Often displayed above the notification body.

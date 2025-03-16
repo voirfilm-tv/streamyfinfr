@@ -12,7 +12,7 @@ namespace Jellyfin.Plugin.Streamyfin.tests;
 public class NotificationTests(ITestOutputHelper output)
 {
     private static readonly SerializationHelper _serializationHelper = new();
-    private readonly NotificationHelper _notificationHelper = new(_serializationHelper);
+    private readonly NotificationHelper _notificationHelper = new(null, null, _serializationHelper);
 
     // Replace with your own android emulator / ios simulator token
     // Do not use a real devices token. If you do, you can invalidate the token by re-installing streamyfin on your device.
@@ -32,7 +32,7 @@ public class NotificationTests(ITestOutputHelper output)
             Body = "All platforms should see this body",
         };
 
-        var task = _notificationHelper.send(request);
+        var task = _notificationHelper.Send(request);
         task.Wait();
 
         Assert.NotNull(task.Result);
@@ -60,7 +60,7 @@ public class NotificationTests(ITestOutputHelper output)
             );
         }
 
-        var task = _notificationHelper.send(notifications);
+        var task = _notificationHelper.Send(notifications);
         task.Wait();
 
         Assert.NotNull(task.Result);
