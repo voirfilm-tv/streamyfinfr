@@ -25,6 +25,8 @@ See the home definition in the example below for more info.
 Together with the [collection import](https://github.com/lostb1t/jellyfin-plugin-collection-import) plugin, one can make very dynamic homescreens.
 Think Trending, popular etc like netflix.
 
+![example](./home.jpg)
+
 ### Config examples
 
 See [examples](https://github.com/streamyfin/jellyfin-plugin-streamyfin/tree/main/examples)
