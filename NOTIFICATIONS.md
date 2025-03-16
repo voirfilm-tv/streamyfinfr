@@ -77,15 +77,17 @@ Admin is in the title since you probably don't want all your users getting this 
 [
     {
         {{#if_equals ItemType 'Season'}}
-            "title": "{{{SeriesName}}} {{{Name}}} has been added",
+          "title": "{{{SeriesName}}} season added",
+          "body": "Watch '{{{Name}}}' now"
         {{else}}
-            {{#if_equals ItemType 'Episode'}}
-                "title": "{{{SeriesName}}} S{{SeasonNumber00}}E{{EpisodeNumber00}} {{{Name}}} has been added",
-            {{else}}
-                "title": "{{{Name}}} ({{Year}}) has been added",
-            {{/if_equals}}
+          {{#if_equals ItemType 'Episode'}}
+            "title": "{{{SeriesName}}} S{{SeasonNumber00}}E{{EpisodeNumber00}} added",
+            "body": "Watch episode '{{{Name}}}' now"
+          {{else}}
+            "title": "{{{Name}}} ({{Year}}) added",
+            "body": "Watch movie now"
+          {{/if_equals}}
         {{/if_equals}}
-        "body": "Open streamyfin to watch now"
     }
 ]
 ```
