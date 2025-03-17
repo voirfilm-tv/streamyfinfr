@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Jellyfin.Plugin.Streamyfin.Configuration;
 using Jellyfin.Plugin.Streamyfin.Extensions;
 using Jellyfin.Plugin.Streamyfin.PushNotifications.models;
 using MediaBrowser.Controller;
@@ -21,7 +20,7 @@ namespace Jellyfin.Plugin.Streamyfin.PushNotifications.Events;
 /// </summary>
 public class PlaybackStartEvent : EventCache, IEventConsumer<PlaybackStartEventArgs>
 {
-    private readonly ILogger<PlaybackStartEvent>? _logger;
+    private readonly ILogger<PlaybackStartEvent> _logger;
     private readonly IServerApplicationHost _applicationHost;
     private readonly NotificationHelper _notificationHelper;
 
@@ -36,10 +35,11 @@ public class PlaybackStartEvent : EventCache, IEventConsumer<PlaybackStartEventA
     }
 
     /// <inheritdoc />
-    public async Task OnEvent(PlaybackStartEventArgs eventArgs)
+    public async Task OnEvent(PlaybackStartEventArgs? eventArgs)
     {
-        if (_config is { notifications.PlaybackStarted.Enabled: false })
+        if (eventArgs == null || Config?.notifications?.PlaybackStarted is not { Enabled: true })
         {
+            _logger.LogInformation("PlaybackStartEvent received but currently disabled.");
             return;
         }
 
@@ -62,16 +62,11 @@ public class PlaybackStartEvent : EventCache, IEventConsumer<PlaybackStartEventA
         
         CleanupOldEntries();
         
-        List<ExpoNotificationRequest> notifications = new();
-
-        foreach (var user in eventArgs.Users)
-        {
-            var notification = CreateNotification(user.Username, eventArgs.Item);
-            if (notification != null && !HasRecentlyProcessed(notification.Body))
-            {
-                notifications.Add(notification);
-            }
-        }
+        var notifications = eventArgs.Users
+            .Select(user => CreateNotification(user.Username, eventArgs.Item))
+            .OfType<ExpoNotificationRequest>()
+            .Where(notification => !HasRecentlyProcessed(notification.Body))
+            .ToList();
 
         if (notifications.Count > 0)
         {
@@ -163,5 +158,15 @@ public class PlaybackStartEvent : EventCache, IEventConsumer<PlaybackStartEventA
             Body = body,
             Data = data
         };
+    }
+
+    /// <inheritdoc />
+    protected override TimeSpan GetRecentEventThreshold()
+    {
+        if (Config?.notifications?.PlaybackStarted is { RecentEventThreshold: null })
+            return base.GetRecentEventThreshold();
+
+        var definedThreshold = (double) Config?.notifications?.PlaybackStarted?.RecentEventThreshold!;
+        return TimeSpan.FromSeconds(double.Abs(definedThreshold));
     }
 }

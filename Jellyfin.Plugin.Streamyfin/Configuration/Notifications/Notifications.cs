@@ -8,14 +8,18 @@ namespace Jellyfin.Plugin.Streamyfin.Configuration.Notifications;
 /// <summary>
 /// Configuration for a notification
 /// </summary>
-public class NotificationEnabled
+public class NotificationConfiguration
 {
     [Display(Name = "Enabled", Description = "if true, the notifications for this event are enabled.")]
     [JsonPropertyName(name: "enabled")]
     public bool Enabled { get; set; }
+
+    [Display(Name = "Recent event threshold", Description = "How long we want to wait until allowing a duplicate event from being processed in seconds")]
+    [JsonPropertyName(name: "recentEventThreshold")]
+    public double? RecentEventThreshold { get; set; }
 }
 
-public class NotificationConfig : NotificationEnabled
+public class UserNotificationConfig : NotificationConfiguration
 {
     [Display(Name = "Jellyfin User Ids", Description = "List of jellyfin user ids that this notification is for.")]
     [JsonPropertyName(name: "userIds")]
@@ -35,15 +39,15 @@ public class Notifications
     [NotNull]
     [Display(Name = "Session Started", Description = "Admins get notified when a jellyfin user is online.")]
     [JsonPropertyName(name: "sessionStarted")]
-    public NotificationEnabled? SessionStarted { get; set; }
-    
+    public NotificationConfiguration? SessionStarted { get; set; }
+
     [NotNull]
     [Display(Name = "Playback Started", Description = "Admins get notified when a jellyfin user is starts playback.")]
     [JsonPropertyName(name: "playbackStarted")]
-    public NotificationEnabled? PlaybackStarted { get; set; }
-    
+    public NotificationConfiguration? PlaybackStarted { get; set; }
+
     [NotNull]
     [Display(Name = "User locked out", Description = "Admins and locked out user get notified jellyfin locks their account")]
     [JsonPropertyName(name: "userLockedOut")]
-    public NotificationEnabled? UserLockedOut { get; set; }
+    public NotificationConfiguration? UserLockedOut { get; set; }
 }

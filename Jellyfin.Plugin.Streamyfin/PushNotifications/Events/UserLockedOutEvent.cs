@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Jellyfin.Data.Events.Users;
 using Jellyfin.Plugin.Streamyfin.Extensions;
@@ -12,7 +13,7 @@ namespace Jellyfin.Plugin.Streamyfin.PushNotifications.Events;
 /// </summary>
 public class UserLockedOutEvent : EventCache, IEventConsumer<UserLockedOutEventArgs>
 {
-    private readonly ILogger<UserLockedOutEvent>? _logger;
+    private readonly ILogger<UserLockedOutEvent> _logger;
     private readonly IServerApplicationHost _applicationHost;
     private readonly NotificationHelper _notificationHelper;
 
@@ -27,10 +28,11 @@ public class UserLockedOutEvent : EventCache, IEventConsumer<UserLockedOutEventA
     }
 
     /// <inheritdoc />
-    public async Task OnEvent(UserLockedOutEventArgs eventArgs)
+    public async Task OnEvent(UserLockedOutEventArgs? eventArgs)
     {
-        if (_config is { notifications.UserLockedOut.Enabled: false })
+        if (eventArgs?.Argument == null || Config?.notifications?.UserLockedOut is not { Enabled: true })
         {
+            _logger.LogInformation("UserLockedOutEvent received but currently disabled.");
             return;
         }
 
@@ -42,5 +44,15 @@ public class UserLockedOutEvent : EventCache, IEventConsumer<UserLockedOutEventA
         };
 
         await _notificationHelper.SendToAdmins(notification).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    protected override TimeSpan GetRecentEventThreshold()
+    {
+        if (Config?.notifications?.UserLockedOut is { RecentEventThreshold: null })
+            return base.GetRecentEventThreshold();
+
+        var definedThreshold = (double) Config?.notifications?.UserLockedOut?.RecentEventThreshold!;
+        return TimeSpan.FromSeconds(double.Abs(definedThreshold));
     }
 }

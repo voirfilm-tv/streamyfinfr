@@ -1,13 +1,11 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Jellyfin.Plugin.Streamyfin.Configuration;
 using Jellyfin.Plugin.Streamyfin.PushNotifications.models;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Events;
 using MediaBrowser.Controller.Events.Session;
+using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.Streamyfin.PushNotifications.Events;
 
@@ -16,25 +14,26 @@ namespace Jellyfin.Plugin.Streamyfin.PushNotifications.Events;
 /// </summary>
 public class SessionStartEvent : EventCache, IEventConsumer<SessionStartedEventArgs>
 {
+    private readonly ILogger<SessionStartEvent> _logger;
     private readonly IServerApplicationHost _applicationHost;
     private readonly NotificationHelper _notificationHelper;
 
     public SessionStartEvent(
+        ILoggerFactory loggerFactory,
         IServerApplicationHost applicationHost,
         NotificationHelper notificationHelper)
     {
+        _logger = loggerFactory.CreateLogger<SessionStartEvent>();
         _applicationHost = applicationHost;
         _notificationHelper = notificationHelper;
     }
 
     /// <inheritdoc />
-    public async Task OnEvent(SessionStartedEventArgs eventArgs)
+    public async Task OnEvent(SessionStartedEventArgs? eventArgs)
     {
-        if (
-            eventArgs.Argument is null ||
-            _config is { notifications.SessionStarted.Enabled: false }
-        )
+        if (eventArgs?.Argument == null || Config?.notifications?.SessionStarted is not { Enabled: true })
         {
+            _logger.LogInformation("SessionStartEvent received but currently disabled.");
             return;
         }
 
@@ -63,5 +62,15 @@ public class SessionStartEvent : EventCache, IEventConsumer<SessionStartedEventA
                 notifications: notifications,
                 excludedUsersIds: [eventArgs.Argument.UserId]
             ).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    protected override TimeSpan GetRecentEventThreshold()
+    {
+        if (Config?.notifications?.SessionStarted is { RecentEventThreshold: null })
+            return base.GetRecentEventThreshold();
+
+        var definedThreshold = (double) Config?.notifications?.SessionStarted?.RecentEventThreshold!;
+        return TimeSpan.FromSeconds(double.Abs(definedThreshold));
     }
 }

@@ -7,27 +7,27 @@ namespace Jellyfin.Plugin.Streamyfin.PushNotifications.Events;
 
 public abstract class EventCache
 {
-    protected static readonly ConcurrentDictionary<string, DateTime> _recentEvents = new();
+    private static readonly ConcurrentDictionary<string, DateTime> RecentEvents = new();
     private static readonly TimeSpan RecentEventThreshold = TimeSpan.FromSeconds(5);
     private static readonly TimeSpan CleanupThreshold = TimeSpan.FromMinutes(5);
 
-    protected static Config? _config => StreamyfinPlugin.Instance?.Configuration.Config;
+    protected static Config? Config => StreamyfinPlugin.Instance?.Configuration.Config;
 
     /// <summary>
     /// Check if the event was recently processed before
     /// </summary>
     /// <param name="sessionKey"></param>
     /// <returns></returns>
-    public bool HasRecentlyProcessed(string sessionKey)
+    protected bool HasRecentlyProcessed(string sessionKey)
     {
         var recentlyProcessed = 
-            _recentEvents.TryGetValue(sessionKey, out DateTime lastProcessedTime) && 
+            RecentEvents.TryGetValue(sessionKey, out DateTime lastProcessedTime) && 
             DateTime.UtcNow - lastProcessedTime < GetRecentEventThreshold();
 
         if (!recentlyProcessed)
         {
             // Update the cache with the latest event time
-            _recentEvents[sessionKey] = DateTime.UtcNow;
+            RecentEvents[sessionKey] = DateTime.UtcNow;
         }
 
         return recentlyProcessed;
@@ -36,26 +36,34 @@ public abstract class EventCache
     /// <summary>
     /// Cleans up old session entries from the cache.
     /// </summary>
-    public void CleanupOldEntries()
+    protected void CleanupOldEntries()
     {
         DateTime threshold = DateTime.UtcNow - GetCleanupThreshold();
-        var keysToRemove = _recentEvents
+        var keysToRemove = RecentEvents
             .Where(kvp => kvp.Value < threshold)
             .Select(kvp => kvp.Key)
             .ToList();
 
         foreach (var key in keysToRemove)
         {
-            _recentEvents.TryRemove(key, out _);
+            RecentEvents.TryRemove(key, out _);
         }
     }
 
-    public virtual TimeSpan GetRecentEventThreshold()
+    /// <summary>
+    /// How long we want to wait until allowing an event with a matching sessionKey to be processed
+    /// </summary>
+    /// <returns>TimeSpan for how long to wait</returns>
+    protected virtual TimeSpan GetRecentEventThreshold()
     {
         return RecentEventThreshold;
     }
-    
-    public virtual TimeSpan GetCleanupThreshold()
+
+    /// <summary>
+    /// Maximum age we want events stored our recentEvents cache to be
+    /// </summary>
+    /// <returns>TimeSpan for how long to wait</returns>
+    protected virtual TimeSpan GetCleanupThreshold()
     {
         return CleanupThreshold;
     }
