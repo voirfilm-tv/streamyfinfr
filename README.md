@@ -6,7 +6,7 @@
 
 The Jellyfin Plugin for Streamyfin is a plugin you install into Jellyfin that hold all settings for the client Streamyfin. This allows you to syncronize settings accross all your users, like: 
 
-- Auto log in to Jellyseerr without the user having to do anythin
+- Auto log in to Jellyseerr without the user having to do anything
 - Choose the default languages 
 - Set download method and search provider
 - Customize homescreen
