@@ -2,16 +2,35 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using Jellyfin.Plugin.Streamyfin.Configuration;
+using MediaBrowser.Controller;
+using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.Streamyfin.PushNotifications.Events;
 
-public abstract class EventCache
+public abstract class BaseEvent
 {
     private static readonly ConcurrentDictionary<string, DateTime> RecentEvents = new();
     private static readonly TimeSpan RecentEventThreshold = TimeSpan.FromSeconds(5);
     private static readonly TimeSpan CleanupThreshold = TimeSpan.FromMinutes(5);
 
     protected static Config? Config => StreamyfinPlugin.Instance?.Configuration.Config;
+    
+    protected readonly ILogger _logger;
+    protected readonly LocalizationHelper _localization;
+    protected readonly IServerApplicationHost _applicationHost;
+    protected readonly NotificationHelper _notificationHelper;
+
+    protected BaseEvent(
+        ILoggerFactory loggerFactory,
+        LocalizationHelper localization,
+        IServerApplicationHost applicationHost,
+        NotificationHelper notificationHelper)
+    {
+        _logger = loggerFactory.CreateLogger(GetType());
+        _localization = localization;
+        _applicationHost = applicationHost;
+        _notificationHelper = notificationHelper;
+    }
 
     /// <summary>
     /// Check if the event was recently processed before

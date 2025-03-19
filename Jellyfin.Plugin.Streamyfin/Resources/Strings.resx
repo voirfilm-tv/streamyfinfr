@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <!-- Required headers -->
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral</value>
+    </resheader>
+
+    <!-- region PlaybackStartEvent -->
+    <data name="PlaybackStartTitle" xml:space="preserve">
+        <value>Playback started</value>
+    </data>
+    <data name="UserWatchingNow" xml:space="preserve">
+        <!-- 0 = Username -->
+        <value>{0} watching now</value>
+    </data>
+    <data name="SeriesSeasonAndEpisode" xml:space="preserve">
+        <!-- 0 = Name, 1 = Season index number, 2 = Episode index number -->
+        <value>{0}, S{1}E{2}</value>
+    </data>
+    <data name="SeriesSeason" xml:space="preserve">
+        <!-- 0 = Name, 1 = Season index number -->
+        <value>{0}, Season {1}</value>
+    </data>
+    <data name="Series Episode" xml:space="preserve">
+        <!-- 0 = Name, 1 = Episode index number -->
+        <value>{0}, Episode {1}</value>
+    </data>
+    <!-- endregion PlaybackStartEvent -->
+    
+    <!-- region SessionStartEvent -->
+    <data name="SessionStartTitle" xml:space="preserve">
+        <value>Session started</value>
+    </data>
+    <data name="UserNowOnline" xml:space="preserve">
+        <!-- 0 = Username -->
+        <value>{0} is now online</value>
+    </data>
+    <!-- endregion SessionStartEvent -->
+
+    <!-- region UserLockedOutEvent -->
+    <data name="UserLockedOutTitle" xml:space="preserve">
+        <value>User locked out</value>
+    </data>
+    <data name="UserHasBeenLockedOut" xml:space="preserve">
+        <!-- 0 = Username -->
+        <value>{0} has been locked out</value>
+    </data>
+    <data name="ContactAdmin" xml:space="preserve">
+        <value>Contact admin for reset</value>
+    </data>
+    <!-- endregion SessionStartEvent -->
+
+    <data name="NameAndYear" xml:space="preserve">
+        <!-- 0 = Name, 1 = Year -->
+        <value>{0} ({1})</value>
+    </data>
+</root>

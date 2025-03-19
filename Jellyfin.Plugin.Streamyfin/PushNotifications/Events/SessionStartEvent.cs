@@ -12,22 +12,13 @@ namespace Jellyfin.Plugin.Streamyfin.PushNotifications.Events;
 /// <summary>
 /// Session start notifier.
 /// </summary>
-public class SessionStartEvent : EventCache, IEventConsumer<SessionStartedEventArgs>
+public class SessionStartEvent(
+    ILoggerFactory loggerFactory,
+    LocalizationHelper localization,
+    IServerApplicationHost applicationHost,
+    NotificationHelper notificationHelper
+) : BaseEvent(loggerFactory, localization, applicationHost, notificationHelper), IEventConsumer<SessionStartedEventArgs>
 {
-    private readonly ILogger<SessionStartEvent> _logger;
-    private readonly IServerApplicationHost _applicationHost;
-    private readonly NotificationHelper _notificationHelper;
-
-    public SessionStartEvent(
-        ILoggerFactory loggerFactory,
-        IServerApplicationHost applicationHost,
-        NotificationHelper notificationHelper)
-    {
-        _logger = loggerFactory.CreateLogger<SessionStartEvent>();
-        _applicationHost = applicationHost;
-        _notificationHelper = notificationHelper;
-    }
-
     /// <inheritdoc />
     public async Task OnEvent(SessionStartedEventArgs? eventArgs)
     {
@@ -52,8 +43,8 @@ public class SessionStartEvent : EventCache, IEventConsumer<SessionStartedEventA
         List<ExpoNotificationRequest> notifications = [
             new()
             {
-                Title = $"Session started",
-                Body = $"{eventArgs.Argument.UserName} is now online"
+                Title = _localization.GetString("SessionStartTitle"),
+                Body = _localization.GetFormatted("UserNowOnline", args: eventArgs.Argument.UserName)
             }
         ];
 

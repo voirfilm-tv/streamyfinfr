@@ -18,21 +18,13 @@ namespace Jellyfin.Plugin.Streamyfin.PushNotifications.Events;
 /// <summary>
 /// Session start notifier.
 /// </summary>
-public class PlaybackStartEvent : EventCache, IEventConsumer<PlaybackStartEventArgs>
+public class PlaybackStartEvent(
+    ILoggerFactory loggerFactory,
+    LocalizationHelper localization,
+    IServerApplicationHost applicationHost,
+    NotificationHelper notificationHelper
+) : BaseEvent(loggerFactory, localization, applicationHost, notificationHelper), IEventConsumer<PlaybackStartEventArgs>
 {
-    private readonly ILogger<PlaybackStartEvent> _logger;
-    private readonly IServerApplicationHost _applicationHost;
-    private readonly NotificationHelper _notificationHelper;
-
-    public PlaybackStartEvent(
-        ILoggerFactory loggerFactory,
-        IServerApplicationHost applicationHost,
-        NotificationHelper notificationHelper)
-    {
-        _logger = loggerFactory.CreateLogger<PlaybackStartEvent>();
-        _applicationHost = applicationHost;
-        _notificationHelper = notificationHelper;
-    }
 
     /// <inheritdoc />
     public async Task OnEvent(PlaybackStartEventArgs? eventArgs)
@@ -79,28 +71,31 @@ public class PlaybackStartEvent : EventCache, IEventConsumer<PlaybackStartEventA
 
     private ExpoNotificationRequest? CreateNotification(string username, BaseItem item)
     {
-        var title = "Playback started";
-        var body = $"{username} now watching\n";
+        string? name = null;
         var data = new Dictionary<string, object?>();
+        List<string> body = [_localization.GetFormatted("UserWatchingNow", args: username)];
 
         _logger.LogInformation("Creating notification from {0} watching type: {1}", username, item.GetType().Name.Escape());
 
         switch (item)
         {
             case Movie movie:
-                body += $"{movie.Name.Escape()} ({movie.ProductionYear})";
+                name = _localization.GetFormatted(
+                    key: "NameAndYear",
+                    args: [movie.Name.Escape(), movie.ProductionYear]
+                );
                 break;
             case Season season:
-                int? year = null;
-
-                if (!string.IsNullOrEmpty(season.Series.Name))
+                if (!string.IsNullOrEmpty(season.Series.Name) && season.Series?.ProductionYear is not null)
                 {
-                    title += $"{season.Series.Name.Escape()}";
+                    name = _localization.GetFormatted(
+                        key: "NameAndYear",
+                        args: [season.Series.Name.Escape(), season.Series.ProductionYear]
+                    );
                 }
-
-                if (season.Series?.ProductionYear is not null)
+                else if (!string.IsNullOrEmpty(season.Series?.Name))
                 {
-                    title += $" ({season.Series.ProductionYear})";
+                    name = season.Series.Name.Escape();
                 }
 
                 if (season.Series?.Id is not null)
@@ -110,10 +105,39 @@ public class PlaybackStartEvent : EventCache, IEventConsumer<PlaybackStartEventA
 
                 break;
             case Episode episode:
-                if (!string.IsNullOrEmpty(episode.Series?.Name))
+
+                name = !string.IsNullOrEmpty(episode.Series?.Name) switch
                 {
-                    body += $"{episode.Series.Name.Escape()}";
-                }
+                    // Name + Season + Episode
+                    true when episode.Season?.IndexNumber is not null && episode.IndexNumber is not null =>
+                        _localization.GetFormatted(
+                            key: "SeriesSeasonAndEpisode",
+                            args: [
+                                episode.Series.Name.Escape(),
+                                episode.Season.IndexNumber.Value.ToString(CultureInfo.InvariantCulture),
+                                episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture)
+                            ]
+                        ),
+                    // Name + Season
+                    true when episode.Season?.IndexNumber is not null => 
+                        _localization.GetFormatted(
+                            key: "SeriesSeason",
+                            args: [
+                                episode.Series.Name.Escape(),
+                                episode.Season.IndexNumber.Value.ToString(CultureInfo.InvariantCulture)
+                            ]
+                        ),
+                    // Name + Episode
+                    true when episode.IndexNumber is not null => 
+                        _localization.GetFormatted(
+                            key: "SeriesEpisode",
+                            args: [
+                                episode.Series.Name.Escape(),
+                                episode.IndexNumber?.ToString("00", CultureInfo.InvariantCulture) ?? string.Empty
+                            ]
+                        ),
+                    _ => episode.Series?.Name.Escape()
+                };
 
                 if (episode.Series?.Id is not null)
                 {
@@ -125,37 +149,23 @@ public class PlaybackStartEvent : EventCache, IEventConsumer<PlaybackStartEventA
                     data["seasonId"] = episode.SeasonId.ToString();
                 }
 
-                if (episode.Season?.IndexNumber is not null)
-                {
-                    body += $", S{episode.Season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture)}";
-                }
-
-                if (episode.IndexNumber is not null)
-                {
-                    body += $"E{episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture)}";
-                }
-
-                // if (episode.Series?.ProductionYear is not null)
-                // {
-                //     body += $" ({episode.Series.ProductionYear})";
-                // }
-
                 break;
         }
-
-        if (string.IsNullOrWhiteSpace(body))
+        
+        if (string.IsNullOrWhiteSpace(name))
         {
             return null;
         }
-
+        
+        body.Add(name);
         data["type"] = item.GetType().Name.Escape();
 
         _logger.LogInformation("Sending playback start notification with body: {0}", body);
 
         return new ExpoNotificationRequest
         {
-            Title = title,
-            Body = body,
+            Title = _localization.GetString("PlaybackStartTitle"),
+            Body = string.Join("\n", body),
             Data = data
         };
     }

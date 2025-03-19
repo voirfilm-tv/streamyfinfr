@@ -11,22 +11,13 @@ namespace Jellyfin.Plugin.Streamyfin.PushNotifications.Events;
 /// <summary>
 /// Session start notifier.
 /// </summary>
-public class UserLockedOutEvent : EventCache, IEventConsumer<UserLockedOutEventArgs>
+public class UserLockedOutEvent(
+    ILoggerFactory loggerFactory,
+    LocalizationHelper localization,
+    IServerApplicationHost applicationHost,
+    NotificationHelper notificationHelper
+) : BaseEvent(loggerFactory, localization, applicationHost, notificationHelper), IEventConsumer<UserLockedOutEventArgs>
 {
-    private readonly ILogger<UserLockedOutEvent> _logger;
-    private readonly IServerApplicationHost _applicationHost;
-    private readonly NotificationHelper _notificationHelper;
-
-    public UserLockedOutEvent(
-        ILoggerFactory loggerFactory,
-        IServerApplicationHost applicationHost,
-        NotificationHelper notificationHelper)
-    {
-        _logger = loggerFactory.CreateLogger<UserLockedOutEvent>();
-        _applicationHost = applicationHost;
-        _notificationHelper = notificationHelper;
-    }
-
     /// <inheritdoc />
     public async Task OnEvent(UserLockedOutEventArgs? eventArgs)
     {
@@ -38,8 +29,11 @@ public class UserLockedOutEvent : EventCache, IEventConsumer<UserLockedOutEventA
 
         var notification = new Notification
         {
-            Title = "User locked out",
-            Body = $"{eventArgs.Argument.Username.Escape()} has been locked out.\nContact admin for reset",
+            Title = _localization.GetString("UserLockedOutTitle"),
+            Body = _localization.GetFormatted(
+                    key: "UserHasBeenLockedOut",
+                    args: eventArgs.Argument.Username.Escape()
+                ) + "\n" + _localization.GetString("ContactAdmin"),
             UserId = eventArgs.Argument.Id
         };
 

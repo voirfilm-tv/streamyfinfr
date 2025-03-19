@@ -1,3 +1,4 @@
+using System.Runtime.Loader;
 using Jellyfin.Data.Events.Users;
 using Jellyfin.Plugin.Streamyfin.PushNotifications;
 using Jellyfin.Plugin.Streamyfin.PushNotifications.Events;
@@ -18,7 +19,8 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
     /// <inheritdoc />
     public void RegisterServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
     {
-        // helpers
+        // Helpers
+        serviceCollection.AddSingleton<LocalizationHelper>();
         serviceCollection.AddSingleton<SerializationHelper>();
         serviceCollection.AddSingleton<NotificationHelper>();
 

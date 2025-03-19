@@ -41,7 +41,7 @@ public class ExpoNotificationRequest
     /// Maps to AndroidNotification.title and aps.alert.title
     /// </summary>
     [JsonProperty(PropertyName = "title")]
-    public string Title { get; set; }
+    public string? Title { get; set; }
 
     /// <summary>
     /// The message to display in the notification.
