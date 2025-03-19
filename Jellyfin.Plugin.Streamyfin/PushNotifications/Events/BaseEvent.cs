@@ -84,6 +84,6 @@ public abstract class BaseEvent
     /// <returns>TimeSpan for how long to wait</returns>
     protected virtual TimeSpan GetCleanupThreshold()
     {
-        return CleanupThreshold;
+        return GetRecentEventThreshold() + CleanupThreshold;
     }
 }
