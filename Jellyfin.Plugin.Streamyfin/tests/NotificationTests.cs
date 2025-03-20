@@ -60,7 +60,7 @@ public class NotificationTests(ITestOutputHelper output)
             );
         }
 
-        var task = _notificationHelper.Send(notifications);
+        var task = _notificationHelper.Send(notifications.ToArray());
         task.Wait();
 
         Assert.NotNull(task.Result);

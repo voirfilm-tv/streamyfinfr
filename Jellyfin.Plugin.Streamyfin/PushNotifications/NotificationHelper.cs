@@ -30,19 +30,11 @@ public class NotificationHelper
     }
 
     /// <summary>
-    /// Ability to send a notification directly to jellyfin admins
-    /// </summary>
-    /// <param name="notification"></param>
-    /// <returns></returns>
-    public async Task<ExpoNotificationResponse?> SendToAdmins(Notification notification) =>
-        await SendToAdmins([notification]).ConfigureAwait(false);
-
-    /// <summary>
     /// Ability to send a batch of notifications directly to jellyfin admins
     /// </summary>
     /// <param name="notification"></param>
     /// <returns></returns>
-    public async Task<ExpoNotificationResponse?> SendToAdmins(List<Notification> notifications)
+    public async Task<ExpoNotificationResponse?> SendToAdmins(params Notification[] notifications)
     {
         var adminTokens = _userManager.GetAdminTokens();
 
@@ -68,16 +60,38 @@ public class NotificationHelper
 
             expoNotification.To = adminTokens.Concat(userDeviceTokens).Distinct().ToList();
             return expoNotification;
-        }).ToList();
+        }).ToArray();
 
         return await Send(expoNotifications).ConfigureAwait(false);
     }
 
-    public async Task<ExpoNotificationResponse?> SendToAdmins(
-        List<ExpoNotificationRequest> notifications,
-        List<Guid>? excludedUsersIds)
+    public async Task<ExpoNotificationResponse?> SendToAll(params ExpoNotificationRequest[] notifications)
     {
-        var excludedIds = excludedUsersIds ?? Array.Empty<Guid>().ToList(); 
+        var all = StreamyfinPlugin.Instance?.Database
+            .GetAllDeviceTokens()
+            .Select(token => token.Token)
+            .ToList() ?? [];
+
+        if (all.Count == 0)
+        {
+            return await Task.FromResult<ExpoNotificationResponse?>(null).ConfigureAwait(false);
+        }
+        
+        var ready = notifications
+            .Select(notification =>
+            {
+                notification.To = all;
+                return notification;
+            }).ToArray();
+        
+        return await Send(ready).ConfigureAwait(false);
+    }
+
+    public async Task<ExpoNotificationResponse?> SendToAdmins(
+        List<Guid>? excludedUserIds = null,
+        params ExpoNotificationRequest[] notifications)
+    {
+        var excludedIds = excludedUserIds ?? Array.Empty<Guid>().ToList(); 
         var adminTokens = _userManager.GetAdminDeviceTokens()
             .FindAll(deviceToken => !excludedIds.Contains(deviceToken.UserId))
             .Select(deviceToken => deviceToken.Token)
@@ -94,26 +108,27 @@ public class NotificationHelper
             {
                 notification.To = adminTokens;
                 return notification;
-            }).ToList();
+            }).ToArray();
 
         return await Send(expoNotifications).ConfigureAwait(false);
     }
 
-    public async Task<ExpoNotificationResponse?> Send(List<ExpoNotificationRequest> notifications) =>
+    public async Task<ExpoNotificationResponse?> Send(params ExpoNotificationRequest[] notifications) =>
         await SendNotificationToExpo(_serializationHelper.ToJson(notifications)).ConfigureAwait(false);
-    
-    public async Task<ExpoNotificationResponse?> Send(ExpoNotificationRequest notification) =>
-        await SendNotificationToExpo(_serializationHelper.ToJson(notification)).ConfigureAwait(false);
 
     private async Task<ExpoNotificationResponse?> SendNotificationToExpo(string serializedRequest)
     {
+        _logger.LogDebug("Preparing to send notification");
         using HttpClient client = new();
         var httpRequest = GetHttpRequestMessage(serializedRequest);
-        var rawResponse = await client.SendAsync(httpRequest);
-        return await rawResponse.Content.ReadFromJsonAsync<ExpoNotificationResponse>().ConfigureAwait(true);
+        var rawResponse = await client.SendAsync(httpRequest).ConfigureAwait(false);
+        _logger.LogDebug("Received response");
+        httpRequest.Dispose();
+
+        return await rawResponse.Content.ReadFromJsonAsync<ExpoNotificationResponse>().ConfigureAwait(false);
     }
 
-    private HttpRequestMessage GetHttpRequestMessage(string content) => new()
+    private static HttpRequestMessage GetHttpRequestMessage(string content) => new()
     {
         Method = HttpMethod.Post,
         RequestUri = new Uri("https://exp.host/--/api/v2/push/send"),

@@ -18,9 +18,9 @@
     <data name="PlaybackStartTitle" xml:space="preserve">
         <value>Playback started</value>
     </data>
-    <data name="UserWatchingNow" xml:space="preserve">
+    <data name="UserWatching" xml:space="preserve">
         <!-- 0 = Username -->
-        <value>{0} watching now</value>
+        <value>{0} watching</value>
     </data>
     <data name="SeriesSeasonAndEpisode" xml:space="preserve">
         <!-- 0 = Name, 1 = Season index number, 2 = Episode index number -->
@@ -58,6 +58,42 @@
         <value>Contact admin for reset</value>
     </data>
     <!-- endregion SessionStartEvent -->
+
+    <!-- region ItemAddedEvent -->
+    <data name="ItemAddedTitle" xml:space="preserve">
+        <!-- 0 = Media type -->
+        <value>{0} added</value>
+    </data>
+    <data name="EpisodeAddedTitle" xml:space="preserve">
+        <!-- 0 = Media type -->
+        <value>Episode added</value>
+    </data>
+    <data name="EpisodesAddedTitle" xml:space="preserve">
+        <!-- 0 = Media type -->
+        <value>Episodes added</value>
+    </data>
+
+    <data name="EpisodeNumberAddedForSeason" xml:space="preserve">
+        <!-- 0 = Series Name, 1 = Episode index, 2 = Season index -->
+        <value>{0} - Episode {1} added for Season {2}</value>
+    </data>
+    <data name="EpisodeAdded" xml:space="preserve">
+        <!-- 0 = Series Name, 1 = Episode index -->
+        <value>{0} - Episode {1} added</value>
+    </data>
+    <data name="EpisodeAddedForSeason" xml:space="preserve">
+        <!-- 0 = Series Name, 1 = Season index -->
+        <value>{0} - Episode added for Season {1}</value>
+    </data>
+    <data name="TotalEpisodesAddedForSeason" xml:space="preserve">
+        <!-- 0 = Series Name, 1 = Episode count, 2 = Season index -->
+        <value>{0} - {1} episodes added for Season {2}</value>
+    </data>
+    <data name="EpisodesAddedToSeries" xml:space="preserve">
+        <!-- 0 = Series Name, 1 = Episode count -->
+        <value>{0} - {1} episodes added</value>
+    </data>
+    <!-- endregion ItemAddedEvent -->
 
     <data name="NameAndYear" xml:space="preserve">
         <!-- 0 = Name, 1 = Year -->

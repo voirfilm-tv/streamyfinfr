@@ -39,8 +39,8 @@ public class SessionStartEvent(
         {
             return;
         }
-        
-        List<ExpoNotificationRequest> notifications = [
+
+        ExpoNotificationRequest[] notifications = [
             new()
             {
                 Title = _localization.GetString("SessionStartTitle"),
@@ -48,11 +48,11 @@ public class SessionStartEvent(
             }
         ];
 
-        await _notificationHelper
+        _notificationHelper
             .SendToAdmins(
-                notifications: notifications,
-                excludedUsersIds: [eventArgs.Argument.UserId]
-            ).ConfigureAwait(false);
+                excludedUserIds: [eventArgs.Argument.UserId],
+                notifications: notifications
+            );
     }
 
     /// <inheritdoc />

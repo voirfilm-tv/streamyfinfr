@@ -245,11 +245,11 @@ public class StreamyfinController : ControllerBase
         return expoNotification;
       })
       .Where(n => n.To.Count > 0)
-      .ToList();
+      .ToArray();
 
-    _logger.LogInformation("Received {0} valid notifications", validNotifications.Count);
+    _logger.LogInformation("Received {0} valid notifications", validNotifications.Length);
 
-    if (validNotifications.Count == 0)
+    if (validNotifications.Length == 0)
     {
       return new AcceptedResult();
     }

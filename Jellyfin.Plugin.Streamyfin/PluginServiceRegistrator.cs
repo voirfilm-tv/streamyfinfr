@@ -1,4 +1,3 @@
-using System.Runtime.Loader;
 using Jellyfin.Data.Events.Users;
 using Jellyfin.Plugin.Streamyfin.PushNotifications;
 using Jellyfin.Plugin.Streamyfin.PushNotifications.Events;
@@ -28,5 +27,8 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
         serviceCollection.AddScoped<IEventConsumer<SessionStartedEventArgs>, SessionStartEvent>();
         serviceCollection.AddScoped<IEventConsumer<PlaybackStartEventArgs>, PlaybackStartEvent>();
         serviceCollection.AddScoped<IEventConsumer<UserLockedOutEventArgs>, UserLockedOutEvent>();
+
+        // Service
+        serviceCollection.AddHostedService<ItemAddedService>();
     }
 }

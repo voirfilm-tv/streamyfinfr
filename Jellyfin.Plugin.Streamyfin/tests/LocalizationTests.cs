@@ -42,8 +42,8 @@ public class LocalizationTests
     public void TestStringFormatLocalization()
     {
         Assert.Equal(
-            expected: "Test watching now",
-            actual: _helper.GetFormatted("UserWatchingNow", args: "Test")
+            expected: "Test watching",
+            actual: _helper.GetFormatted("UserWatching", args: "Test")
         );
     }
 }

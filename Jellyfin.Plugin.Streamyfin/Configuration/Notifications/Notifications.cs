@@ -50,4 +50,9 @@ public class Notifications
     [Display(Name = "User locked out", Description = "Admins and locked out user get notified jellyfin locks their account")]
     [JsonPropertyName(name: "userLockedOut")]
     public NotificationConfiguration? UserLockedOut { get; set; }
+
+    [NotNull]
+    [Display(Name = "Item added", Description = "Get notified when jellyfin adds new Movies or Episodes")]
+    [JsonPropertyName(name: "itemAdded")]
+    public NotificationConfiguration? ItemAdded { get; set; }
 }

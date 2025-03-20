@@ -52,6 +52,10 @@ public class PluginConfiguration : BasePluginConfiguration
     UserLockedOut = new ()
     {
       Enabled = true
+    },
+    ItemAdded = new()
+    {
+      Enabled = true
     }
   };
 
