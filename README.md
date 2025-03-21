@@ -14,7 +14,7 @@
 Features
 ------
 
-With this plugin you allow the streamyfin application to do the following... 
+With this plugin you allow the streamyfin application to do the following for all your users... 
 
 <table>
   <thead>
