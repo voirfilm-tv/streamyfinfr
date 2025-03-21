@@ -33,7 +33,7 @@ public class UserLockedOutEvent(
             Body = _localization.GetFormatted(
                     key: "UserHasBeenLockedOut",
                     args: eventArgs.Argument.Username.Escape()
-                ) + "\n" + _localization.GetString("ContactAdmin"),
+                ),
             UserId = eventArgs.Argument.Id
         };
 

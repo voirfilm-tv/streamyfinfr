@@ -54,9 +54,6 @@
         <!-- 0 = Username -->
         <value>{0} has been locked out</value>
     </data>
-    <data name="ContactAdmin" xml:space="preserve">
-        <value>Contact admin for reset</value>
-    </data>
     <!-- endregion SessionStartEvent -->
 
     <!-- region ItemAddedEvent -->
