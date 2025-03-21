@@ -1,4 +1,4 @@
-<div style="text-align: center">
+<div align="center" style="text-align: center;">
 
 <h1>Companion plugin for Streamyfin</h1>
 
@@ -10,7 +10,6 @@
 
 </div>
 
----
 
 Features
 ------
@@ -32,9 +31,8 @@ With this plugin you allow the streamyfin application to do the following...
   </tbody>
 </table>
 
-<p style="text-align: center;font-size: 24px">Plus many more features!</p>
+<h3 align="center">Plus many more features!</h3>
 
----
 
 Install Process
 ------
