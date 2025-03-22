@@ -196,7 +196,21 @@ public class StreamyfinController : ControllerBase
 
     List<DeviceToken>? allTokens = null;
     var validNotifications = notifications
-      .FindAll(n => !(string.IsNullOrWhiteSpace(n.Title) && string.IsNullOrWhiteSpace(n.Body)))
+      .FindAll(n =>
+      {
+        var title = n.Title ?? "";
+        var body = n.Body ?? "";
+        
+        // Title and body are both valid
+        if (!title.IsNullOrNonWord() && !body.IsNullOrNonWord())
+        {
+          return true;
+        }
+
+        // Title can be empty, body is required.
+        return string.IsNullOrEmpty(title) && !body.IsNullOrNonWord();
+        // every other scenario is invalid
+      })
       .Select(notification =>
       {
         List<DeviceToken> tokens = [];
