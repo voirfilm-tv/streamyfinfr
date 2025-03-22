@@ -5,6 +5,7 @@ Our plugin can consume any event and forward them to your streamyfin users!
 There are currently a few jellyfin events directly supported by our plugin!
 
 Events:
+- Item Added (Everyone)
 - Session Started (Admin only)
 - User Locked out (Admin + user who was locked out)
 - Playback started (Admin only)
@@ -62,13 +63,17 @@ You can use the [jellyfin-webhook-plugin](https://github.com/jellyfin/jellyfin-p
 - Webhook Url should be the url example from above
 - Selected notification type
 
-You'll want to create a separate webhook destination for each event so we can avoid filtering on our end.
+If we don't directly support an event you'll want to create a separate webhook destination for each event so we can avoid filtering on our end.
+
+**We are currently looking into supporting as many of the jellyfin events so that you don't have to worry about configuring them!**
 
 ### examples
 
-- [Item Added](#item-added-notification)
+- [Item Added](#item-added-notification) 
+  - We currently support this on our end with the enhancement of:
+    - reducing spam when multiple episodes are added for a season in a short period of time.
+    - deep link into item page to start playing item from notification
 
-**We are currently looking into using these notifications directly without us having to forward these to ourselves**
 
 ### Item added notification
 - Select event "Item Added"
