@@ -1,7 +1,7 @@
 using System.Globalization;
 using Xunit;
 
-namespace Jellyfin.Plugin.Streamyfin.tests;
+namespace Jellyfin.Plugin.Streamyfin.Tests;
 
 
 /// <summary>

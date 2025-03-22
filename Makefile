@@ -27,8 +27,11 @@ update-version:
 update-manifest:
 	node scripts/validate-and-update-manifest.js
 
+test: 
+	dotnet test Jellyfin.PLugin.Streamyfin.Tests
+
 build: 
-	dotnet build --configuration Release
+	dotnet build Jellyfin.PLugin.Streamyfin --configuration Release
   
 push-manifest:
 	git commit -m 'new release: ${VERSION}' manifest.json

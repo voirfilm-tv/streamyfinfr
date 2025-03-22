@@ -4,7 +4,7 @@ using Jellyfin.Plugin.Streamyfin.PushNotifications.models;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Jellyfin.Plugin.Streamyfin.tests;
+namespace Jellyfin.Plugin.Streamyfin.Tests;
 
 /// <summary>
 /// Ensure special types are properly serialized/deserialized when converting between Object - Json - Yaml

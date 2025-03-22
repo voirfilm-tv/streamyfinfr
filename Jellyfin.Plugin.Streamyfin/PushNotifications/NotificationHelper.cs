@@ -38,12 +38,12 @@ public class NotificationHelper
     {
         var adminTokens = _userManager.GetAdminTokens();
         
-        _logger.LogInformation("Attempting to send {0} notifications to admins", notifications.Length);
+        _logger?.LogInformation("Attempting to send {0} notifications to admins", notifications.Length);
 
         // No admin tokens found.
         if (adminTokens.Count == 0)
         {
-            _logger.LogInformation("No admins found");
+            _logger?.LogInformation("No admins found");
             return await Task.FromResult<ExpoNotificationResponse?>(null).ConfigureAwait(false);
         }
 
@@ -70,7 +70,7 @@ public class NotificationHelper
 
     public async Task<ExpoNotificationResponse?> SendToAll(params ExpoNotificationRequest[] notifications)
     {
-        _logger.LogInformation("Attempting to send {0} notifications to everyone", notifications.Length);
+        _logger?.LogInformation("Attempting to send {0} notifications to everyone", notifications.Length);
 
         var all = StreamyfinPlugin.Instance?.Database
             .GetAllDeviceTokens()
@@ -80,7 +80,7 @@ public class NotificationHelper
 
         if (all.Count == 0)
         {
-            _logger.LogInformation("No devices found");
+            _logger?.LogInformation("No devices found");
             return await Task.FromResult<ExpoNotificationResponse?>(null).ConfigureAwait(false);
         }
         
@@ -98,7 +98,7 @@ public class NotificationHelper
         List<Guid>? excludedUserIds = null,
         params ExpoNotificationRequest[] notifications)
     {
-        _logger.LogInformation("Attempting to send {0} notifications to admins", notifications.Length);
+        _logger?.LogInformation("Attempting to send {0} notifications to admins", notifications.Length);
 
         var excludedIds = excludedUserIds ?? Array.Empty<Guid>().ToList(); 
         var adminTokens = _userManager.GetAdminDeviceTokens()
@@ -110,7 +110,7 @@ public class NotificationHelper
         // No admin tokens found.
         if (adminTokens.Count == 0)
         {
-            _logger.LogInformation("No admins found");
+            _logger?.LogInformation("No admins found");
             return await Task.FromResult<ExpoNotificationResponse?>(null).ConfigureAwait(false);
         }
 
@@ -129,11 +129,11 @@ public class NotificationHelper
 
     private async Task<ExpoNotificationResponse?> SendNotificationToExpo(string serializedRequest)
     {
-        _logger.LogDebug("Preparing to send notification");
+        _logger?.LogDebug("Preparing to send notification");
         using HttpClient client = new();
         var httpRequest = GetHttpRequestMessage(serializedRequest);
         var rawResponse = await client.SendAsync(httpRequest).ConfigureAwait(false);
-        _logger.LogDebug("Received response");
+        _logger?.LogDebug("Received response");
         httpRequest.Dispose();
 
         return await rawResponse.Content.ReadFromJsonAsync<ExpoNotificationResponse>().ConfigureAwait(false);

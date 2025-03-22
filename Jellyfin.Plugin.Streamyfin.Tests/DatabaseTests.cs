@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 using Xunit.Sdk;
 using Assert = ICU4N.Impl.Assert;
 
-namespace Jellyfin.Plugin.Streamyfin.tests;
+namespace Jellyfin.Plugin.Streamyfin.Tests;
 
 /// <summary>
 /// Run before and after every db test

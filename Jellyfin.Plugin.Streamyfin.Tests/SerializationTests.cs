@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 using Assert = ICU4N.Impl.Assert;
 using Settings = Jellyfin.Plugin.Streamyfin.Configuration.Settings.Settings;
 
-namespace Jellyfin.Plugin.Streamyfin.tests;
+namespace Jellyfin.Plugin.Streamyfin.Tests;
 
 /// <summary>
 /// Ensure special types are properly serialized/deserialized when converting between Object - Json - Yaml
