@@ -1,3 +1,7 @@
+import * as jsYaml from "/web/configurationpage?name=js-yaml.js";
+import "/web/configurationpage?name=monaco-editor.js";
+import "/web/configurationpage?name=json-editor.js";
+
 export default function (view) {
     const SCHEMA_URL = window.ApiClient.getUrl('streamyfin/config/schema');
     const YAML_URL = window.ApiClient.getUrl('streamyfin/config/yaml')
@@ -17,14 +21,14 @@ export default function (view) {
             if (Streamyfin.isYamlEditorActive()) {
                 const yamlString = Streamyfin.editor.getModel().getValue();
 
-                Streamyfin.jsonEditor.setValue(window.jsYaml.load(yamlString));
+                Streamyfin.jsonEditor.setValue(jsYaml.load(yamlString));
                 yamlEditorEl.style.display = 'none';
                 jsonEditorEl.style.display = 'block';
             }
             else {
                 const json = Streamyfin.jsonEditor.getValue();
 
-                Streamyfin.editor.getModel().setValue(window.jsYaml.dump(json));
+                Streamyfin.editor.getModel().setValue(jsYaml.dump(json));
                 yamlEditorEl.style.display = 'block';
                 jsonEditorEl.style.display = 'none';
             }
@@ -35,7 +39,7 @@ export default function (view) {
             const data = JSON.stringify({
                 Value: Streamyfin.isYamlEditorActive() 
                     ? Streamyfin.editor.getModel().getValue()
-                    : window.jsYaml.dump(Streamyfin.jsonEditor.getValue())
+                    : jsYaml.dump(Streamyfin.jsonEditor.getValue())
             });
 
             window.ApiClient.ajax({type: 'POST', url: YAML_URL, data, contentType: 'application/json'})
@@ -91,7 +95,7 @@ export default function (view) {
                     const { Value } = await response.json();
 
                     Streamyfin.editor.getModel().setValue(Value);
-                    Streamyfin.jsonEditor.setValue(window.jsYaml.load(Value));
+                    Streamyfin.jsonEditor.setValue(jsYaml.load(Value));
                 })
                 .catch((error) => console.error(error))
                 .finally(Dashboard.hideLoadingMsg);

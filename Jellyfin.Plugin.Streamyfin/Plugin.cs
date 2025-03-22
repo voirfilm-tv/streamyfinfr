@@ -54,5 +54,23 @@ public class StreamyfinPlugin : BasePlugin<PluginConfiguration>, IHasWebPages
             Name = $"{Name}.js",
             EmbeddedResourcePath = prefix + ".Configuration.config.js"
         };
+        
+        yield return new PluginPageInfo
+        {
+            Name = $"json-editor.js",
+            EmbeddedResourcePath = prefix + ".Configuration.json-editor.min.js"
+        };
+        
+        yield return new PluginPageInfo
+        {
+            Name = $"monaco-editor.js",
+            EmbeddedResourcePath = prefix + ".Configuration.monaco-editor.bundle.js"
+        };
+        
+        yield return new PluginPageInfo
+        {
+            Name = $"js-yaml.js",
+            EmbeddedResourcePath = prefix + ".Configuration.js-yaml.min.js"
+        };
     }
 }
