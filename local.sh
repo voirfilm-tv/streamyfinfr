@@ -37,7 +37,7 @@ fi;
 PLUGIN_VERSION=$(grep '<FileVersion>' < Jellyfin.Plugin.Streamyfin/Jellyfin.Plugin.Streamyfin.csproj | sed 's/.*<FileVersion>\(.*\)<\/FileVersion>/\1/')
 echo "Current version: $PLUGIN_VERSION"
 
-dotnet build --configuration $CONFIGURATION
+dotnet build Jellyfin.Plugin.Streamyfin --configuration $CONFIGURATION
 
 rm -rf ./dist/
 mkdir ./dist/

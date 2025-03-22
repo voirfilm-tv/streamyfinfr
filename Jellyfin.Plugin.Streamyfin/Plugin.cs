@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Jellyfin.Plugin.Streamyfin.Configuration;
 using Jellyfin.Plugin.Streamyfin.Storage;
 using MediaBrowser.Common.Configuration;
@@ -24,12 +25,15 @@ public class StreamyfinPlugin : BasePlugin<PluginConfiguration>, IHasWebPages
     {
         Instance = this;
         Database = new Database(applicationPaths.DataPath);
+        _prefix = GetType().Namespace;
     }
     
     public Database Database { get; }
 
     /// <inheritdoc />
     public override string Name => "Streamyfin";
+
+    private static string? _prefix;
 
     /// <inheritdoc />
     public override Guid Id => Guid.Parse("1e9e5d38-6e67-4615-8719-e98a5c34f004");
@@ -39,38 +43,132 @@ public class StreamyfinPlugin : BasePlugin<PluginConfiguration>, IHasWebPages
     /// </summary>
     public static StreamyfinPlugin? Instance { get; private set; }
 
+    private List<PluginPageInfo> _pages () =>
+    [
+        new()
+        {
+            Name = "Application",
+            EmbeddedResourcePath = _prefix + ".Pages.Application.index.html"
+        },
+
+        new PluginPageInfo
+        {
+            Name = "Application.js",
+            EmbeddedResourcePath = _prefix + ".Pages.Application.index.js"
+        },
+
+        new PluginPageInfo
+        {
+            Name = "Notifications",
+            EmbeddedResourcePath = _prefix + ".Pages.Notifications.index.html"
+        },
+
+        new PluginPageInfo
+        {
+            Name = "Notifications.js",
+            EmbeddedResourcePath = _prefix + ".Pages.Notifications.index.js"
+        },
+
+        new PluginPageInfo
+        {
+            Name = "Other",
+            EmbeddedResourcePath = _prefix + ".Pages.Other.index.html"
+        },
+
+        new PluginPageInfo
+        {
+            Name = "Other.js",
+            EmbeddedResourcePath = _prefix + ".Pages.Other.index.js"
+        },
+
+        new PluginPageInfo
+        {
+            Name = "Yaml",
+            EmbeddedResourcePath = _prefix + ".Pages.YamlEditor.index.html"
+        },
+
+        new PluginPageInfo
+        {
+            Name = "Yaml.js",
+            EmbeddedResourcePath = _prefix + ".Pages.YamlEditor.index.js"
+        }
+    ];
+
     /// <inheritdoc />
     public IEnumerable<PluginPageInfo> GetPages()
     {
-        var prefix = GetType().Namespace;
+        if (Instance?.Configuration?.Config?.Other?.HomePage != null)
+        {
+            var homePage = _pages().FirstOrDefault(page => string.Equals(page.Name, Instance.Configuration.Config.Other.HomePage, StringComparison.Ordinal));
+
+            if (homePage != null)
+            {
+                List<PluginPageInfo> pages = [homePage];
+                pages.AddRange(_pages().Where(p => p.Name != homePage.Name));
+
+                foreach (var pluginPageInfo in pages)
+                {
+                    yield return pluginPageInfo;
+                }
+            }
+            else
+            {
+                foreach (var pluginPageInfo in _pages())
+                {
+                    yield return pluginPageInfo;
+                }
+            }
+        }
+
+        // region pages
+
+        // endregion pages
+        
+        // region libraries
+
+        // region monaco-editor
         yield return new PluginPageInfo
         {
-            Name = Name,
-            EmbeddedResourcePath = prefix + ".Configuration.config.html",
+            Name = "yaml.worker.js",
+            EmbeddedResourcePath = _prefix + ".Pages.Libraries.yaml.worker.js"
+        };
+        
+        yield return new PluginPageInfo
+        {
+            Name = "json.worker.js",
+            EmbeddedResourcePath = _prefix + ".Pages.Libraries.json.worker.js"
+        };
+                
+        yield return new PluginPageInfo
+        {
+            Name = "editor.worker.js",
+            EmbeddedResourcePath = _prefix + ".Pages.Libraries.editor.worker.js"
         };
 
         yield return new PluginPageInfo
         {
-            Name = $"{Name}.js",
-            EmbeddedResourcePath = prefix + ".Configuration.config.js"
+            Name = "monaco-editor.bundle.js",
+            EmbeddedResourcePath = _prefix + ".Pages.Libraries.monaco-editor.bundle.js"
         };
-        
+        // endregion monaco-editor
+
         yield return new PluginPageInfo
         {
-            Name = $"json-editor.js",
-            EmbeddedResourcePath = prefix + ".Configuration.json-editor.min.js"
+            Name = "json-editor.js",
+            EmbeddedResourcePath = _prefix + ".Pages.Libraries.json-editor.min.js"
         };
-        
+
         yield return new PluginPageInfo
         {
-            Name = $"monaco-editor.js",
-            EmbeddedResourcePath = prefix + ".Configuration.monaco-editor.bundle.js"
+            Name = "js-yaml.js",
+            EmbeddedResourcePath = _prefix + ".Pages.Libraries.js-yaml.min.js"
         };
-        
+
         yield return new PluginPageInfo
         {
-            Name = $"js-yaml.js",
-            EmbeddedResourcePath = prefix + ".Configuration.js-yaml.min.js"
+            Name = "shared.js",
+            EmbeddedResourcePath = _prefix + ".Pages.shared.js"
         };
+        // endregion libraries
     }
 }

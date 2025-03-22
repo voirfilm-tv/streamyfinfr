@@ -1,0 +1,28 @@
+<div data-role="page" class="page type-interior pluginConfigurationPage withTabs"
+     data-require="emby-button,emby-select,emby-checkbox"
+     data-controller="__plugin/Other.js">
+    <div class="content-primary" style="max-width: 53em; height: 100%">
+        <div class="verticalSection">
+            <div class="sectionTitleContainer">
+                <h1 class="sectionTitle">Streamyfin</h1>
+            </div>
+            <div class="sectionTitleContainer">
+                <h2 class="sectionTitle">Other</h2>
+            </div>
+        </div>
+
+        <div class="verticalSection-extrabottompadding">
+            <div class="inputContainer">
+                <label class="inputLabel" for="home-page">Home page</label>
+                <select id="home-page" is="emby-select" class="emby-select-withcolor emby-select"></select>
+                <div class="fieldDescription">The plugin page you want to always load first.</div>
+            </div>
+        </div>
+
+        <div id="config-layout">
+            <button id="save-other-btn" is="emby-button" type="submit" class="raised button-submit block">
+                <span>Save</span>
+            </button>
+        </div>
+    </div>
+</div>
