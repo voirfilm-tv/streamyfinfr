@@ -26,6 +26,7 @@ static class MediaNotificationHelper
             case Movie movie:
                 // Potentially clean up any BaseItem without any corrected metadata
                 var movieName = Regex.Replace(movie.Name.Escape(), "\\(\\d+\\)", "").Trim();
+                data["id"] = movie.Id.ToString();
 
                 name = localization.GetFormatted(
                     key: "NameAndYear",
@@ -47,11 +48,12 @@ static class MediaNotificationHelper
 
                 if (season.Series?.Id is not null)
                 {
-                    data["id"] = season.Series.Id.ToString();
+                    data["seriesId"] = season.Series.Id.ToString();
                 }
 
                 break;
             case Episode episode:
+                data["id"] = episode.Id.ToString();
 
                 name = !string.IsNullOrEmpty(episode.Series?.Name) switch
                 {
@@ -59,26 +61,29 @@ static class MediaNotificationHelper
                     true when episode.Season?.IndexNumber is not null && episode.IndexNumber is not null =>
                         localization.GetFormatted(
                             key: "SeriesSeasonAndEpisode",
-                            args: [
+                            args:
+                            [
                                 episode.Series.Name.Escape(),
                                 episode.Season.IndexNumber.Value.ToString(CultureInfo.InvariantCulture),
                                 episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture)
                             ]
                         ),
                     // Name + Season
-                    true when episode.Season?.IndexNumber is not null => 
+                    true when episode.Season?.IndexNumber is not null =>
                         localization.GetFormatted(
                             key: "SeriesSeason",
-                            args: [
+                            args:
+                            [
                                 episode.Series.Name.Escape(),
                                 episode.Season.IndexNumber.Value.ToString(CultureInfo.InvariantCulture)
                             ]
                         ),
                     // Name + Episode
-                    true when episode.IndexNumber is not null => 
+                    true when episode.IndexNumber is not null =>
                         localization.GetFormatted(
                             key: "SeriesEpisode",
-                            args: [
+                            args:
+                            [
                                 episode.Series.Name.Escape(),
                                 episode.IndexNumber?.ToString("00", CultureInfo.InvariantCulture) ?? string.Empty
                             ]
@@ -86,15 +91,8 @@ static class MediaNotificationHelper
                     _ => episode.Series?.Name.Escape()
                 };
 
-                if (episode.Series?.Id is not null)
-                {
-                    data["id"] = episode.Series.Id.ToString();
-                }
-
-                if (!episode.SeasonId.Equals(Guid.Empty))
-                {
-                    data["seasonId"] = episode.SeasonId.ToString();
-                }
+                data["seriesId"] = episode.SeriesId;
+                data["seasonIndex"] = episode.Season?.IndexNumber;
 
                 break;
         }
@@ -103,7 +101,7 @@ static class MediaNotificationHelper
         {
             return null;
         }
-        
+
         body.Add(name);
         data["type"] = item.GetType().Name.Escape();
 

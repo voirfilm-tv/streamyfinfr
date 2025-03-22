@@ -86,14 +86,14 @@ public class ItemAddedService : BaseEvent, IHostedService
 
         string title;
         List<string> body = [];
-        var data = new Dictionary<string, object>();
+        var data = new Dictionary<string, object?>();
 
         _logger.LogInformation("Episode timer finished. Captured {0} episodes for {1}.", total, name);
 
         if (total == 1)
         {
             title = _localization.GetString("EpisodeAddedTitle");
-            data["id"] = episode.Id;
+            data["id"] = episode.Id; // only provide for a single episode notification
 
             // Both episode & season information is available
             if (episode.IndexNumber != null && episode.Season.IndexNumber != null)
@@ -148,7 +148,8 @@ public class ItemAddedService : BaseEvent, IHostedService
             }
         }
 
-        data["seasonId"] = episode.SeasonId.ToString();
+        data["seasonIndex"] = episode.Season?.IndexNumber;
+        data["seriesId"] = episode.SeriesId;
         data["type"] = episode.GetType().Name.Escape();
 
         var notification = new ExpoNotificationRequest
