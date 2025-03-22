@@ -75,6 +75,7 @@ public class NotificationHelper
         var all = StreamyfinPlugin.Instance?.Database
             .GetAllDeviceTokens()
             .Select(token => token.Token)
+            .Distinct()
             .ToList() ?? [];
 
         if (all.Count == 0)
@@ -103,6 +104,7 @@ public class NotificationHelper
         var adminTokens = _userManager.GetAdminDeviceTokens()
             .FindAll(deviceToken => !excludedIds.Contains(deviceToken.UserId))
             .Select(deviceToken => deviceToken.Token)
+            .Distinct()
             .ToList();
 
         // No admin tokens found.
