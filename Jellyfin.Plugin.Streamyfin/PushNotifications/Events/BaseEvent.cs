@@ -39,15 +39,19 @@ public abstract class BaseEvent
     /// <returns></returns>
     protected bool HasRecentlyProcessed(string sessionKey)
     {
+        _logger.LogDebug("Checking recent events for key: {0}", sessionKey);
+
         var recentlyProcessed = 
             RecentEvents.TryGetValue(sessionKey, out DateTime lastProcessedTime) && 
             DateTime.UtcNow - lastProcessedTime < GetRecentEventThreshold();
 
         if (!recentlyProcessed)
         {
+            _logger.LogDebug("No recent events for key: {0}", sessionKey);
             // Update the cache with the latest event time
             RecentEvents[sessionKey] = DateTime.UtcNow;
         }
+        else _logger.LogDebug("There are recent events for key: {0}", sessionKey);
 
         return recentlyProcessed;
     }
@@ -58,15 +62,14 @@ public abstract class BaseEvent
     protected void CleanupOldEntries()
     {
         DateTime threshold = DateTime.UtcNow - GetCleanupThreshold();
-        var keysToRemove = RecentEvents
+
+        _logger.LogDebug("Checking for entries older than: {0}", threshold);
+
+        RecentEvents
             .Where(kvp => kvp.Value < threshold)
             .Select(kvp => kvp.Key)
-            .ToList();
-
-        foreach (var key in keysToRemove)
-        {
-            RecentEvents.TryRemove(key, out _);
-        }
+            .ToList()
+            .ForEach(key => RecentEvents.TryRemove(key, out _));
     }
 
     /// <summary>
@@ -75,6 +78,7 @@ public abstract class BaseEvent
     /// <returns>TimeSpan for how long to wait</returns>
     protected virtual TimeSpan GetRecentEventThreshold()
     {
+        _logger.LogDebug("Getting default RecentEventsThreshold: {0}", RecentEventThreshold);
         return RecentEventThreshold;
     }
 

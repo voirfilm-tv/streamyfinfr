@@ -51,7 +51,8 @@ public class PlaybackStartEvent(
             // No users in playback session.
             return;
         }
-        
+        _logger.LogInformation("PlaybackStartEvent received.");
+
         CleanupOldEntries();
 
         var notifications = eventArgs.Users
@@ -74,6 +75,7 @@ public class PlaybackStartEvent(
                 notifications: notifications
             );
         }
+        else _logger.LogInformation("There are no valid notifications to send.");
     }
 
     /// <inheritdoc />

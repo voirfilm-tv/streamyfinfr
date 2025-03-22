@@ -37,10 +37,13 @@ public class NotificationHelper
     public async Task<ExpoNotificationResponse?> SendToAdmins(params Notification[] notifications)
     {
         var adminTokens = _userManager.GetAdminTokens();
+        
+        _logger.LogInformation("Attempting to send {0} notifications to admins", notifications.Length);
 
         // No admin tokens found.
         if (adminTokens.Count == 0)
         {
+            _logger.LogInformation("No admins found");
             return await Task.FromResult<ExpoNotificationResponse?>(null).ConfigureAwait(false);
         }
 
@@ -67,6 +70,8 @@ public class NotificationHelper
 
     public async Task<ExpoNotificationResponse?> SendToAll(params ExpoNotificationRequest[] notifications)
     {
+        _logger.LogInformation("Attempting to send {0} notifications to everyone", notifications.Length);
+
         var all = StreamyfinPlugin.Instance?.Database
             .GetAllDeviceTokens()
             .Select(token => token.Token)
@@ -74,6 +79,7 @@ public class NotificationHelper
 
         if (all.Count == 0)
         {
+            _logger.LogInformation("No devices found");
             return await Task.FromResult<ExpoNotificationResponse?>(null).ConfigureAwait(false);
         }
         
@@ -91,6 +97,8 @@ public class NotificationHelper
         List<Guid>? excludedUserIds = null,
         params ExpoNotificationRequest[] notifications)
     {
+        _logger.LogInformation("Attempting to send {0} notifications to admins", notifications.Length);
+
         var excludedIds = excludedUserIds ?? Array.Empty<Guid>().ToList(); 
         var adminTokens = _userManager.GetAdminDeviceTokens()
             .FindAll(deviceToken => !excludedIds.Contains(deviceToken.UserId))
@@ -100,6 +108,7 @@ public class NotificationHelper
         // No admin tokens found.
         if (adminTokens.Count == 0)
         {
+            _logger.LogInformation("No admins found");
             return await Task.FromResult<ExpoNotificationResponse?>(null).ConfigureAwait(false);
         }
 
