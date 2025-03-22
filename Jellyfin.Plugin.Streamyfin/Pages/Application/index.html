@@ -1,0 +1,345 @@
+<div data-role="page" class="page type-interior pluginConfigurationPage withTabs"
+     data-require="emby-button,emby-select,emby-checkbox"
+     data-controller="__plugin/Application.js">
+    <style>
+        summary {
+            cursor: pointer;
+            padding: 10px;
+            width: inherit;
+            margin: auto;
+            text-align: left;
+            font-size: 1.5em;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+    </style>
+    
+    <div class="content-primary" style="max-width: 53em; height: 100%">
+        <div class="verticalSection">
+            <div class="sectionTitleContainer">
+                <h1 class="sectionTitle">Streamyfin</h1>
+            </div>
+            <div class="sectionTitleContainer">
+                <h2 class="sectionTitle">Application</h2>
+            </div>
+        </div>
+        
+        <p>These settings are the ones found on the application itself. As the admin you are allowed to set default values to these settings and also choose to lock them from your users.</p>
+
+<!--        <details id="home-settings">-->
+<!--            <summary>Home settings</summary>-->
+<!--            <div style="padding: 16px 8px 0px 8px;">-->
+<!--                <div class="verticalSection">-->
+<!--                    -->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </details>-->
+<!--        -->
+        <details id="video-settings">
+            <summary>Video settings</summary>
+            <div style="padding: 16px 8px 0px 8px;">
+                <div class="verticalSection">
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="forward-skip-value">Forward skip time</label>
+                        <input id="forward-skip-value" data-key-name="forwardSkipTime" data-prop-name="value" type="number" is="emby-input" step="5" min="0" max="60"/>
+                        <div class="fieldDescription">The amount of time in seconds you want to be able to skip forward during playback</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="forward-skip-locked" data-key-name="forwardSkipTime" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="rewind-skip-value">Rewind skip time</label>
+                        <input id="rewind-skip-value" data-key-name="rewindSkipTime" data-prop-name="value" type="number" is="emby-input" step="5" min="0" max="60"/>
+                        <div class="fieldDescription">The amount of time in seconds you want to be able to rewind during playback</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="rewind-skip-locked" data-key-name="rewindSkipTime" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <details id="audio-settings">
+            <summary>Audio settings</summary>
+            <div style="padding: 16px 8px 0px 8px;">
+                <div class="verticalSection">
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="remember-audio-value" data-key-name="rememberAudioSelections" data-prop-name="value"  type="checkbox" is="emby-checkbox"/>
+                            <span class="checkboxLabel">Remember audio selection</span>
+                        </label>
+                        <div class="fieldDescription">Allows you to set the audio language from the previous played item</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="remember-audio-locked" data-key-name="rememberAudioSelections" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+        </details>
+
+        <details id="subtitle-settings">
+            <summary>Subtitle settings</summary>
+            <div style="padding: 16px 8px 0px 8px;">
+                <div class="verticalSection">
+
+                    <div class="inputContainer">
+                        <label class="inputLabel" for="subtitle-playback-value">Subtitle playback mode</label>
+                        <select id="subtitle-playback-value" data-key-name="subtitleMode" data-prop-name="value" is="emby-select" class="emby-select-withcolor emby-select"></select>
+                        <div class="fieldDescription">Setting to determine when subtitles will automatically play during video playback</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="subtitle-playback-locked" data-key-name="subtitleMode" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="remember-subtitle-value" data-key-name="rememberSubtitleSelections" data-prop-name="value" type="checkbox" is="emby-checkbox"/>
+                            <span class="checkboxLabel">Remember subtitle selection</span>
+                        </label>
+                        <div class="fieldDescription">Allows you to set the subtitle language based on the previous played item</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="remember-subtitle-locked" data-key-name="rememberSubtitleSelections" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="subtitle-scale-value">Subtitle scale size</label>
+                        <input id="subtitle-scale-value" data-key-name="subtitleSize" data-prop-name="value" type="number" is="emby-input" step="5" min="0" max="120"/>
+                        <div class="fieldDescription">Adjust the subtitle size during video playback</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="subtitle-scale-locked" data-key-name="subtitleSize" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+        </details>
+        
+        <details id="other-settings">
+            <summary>Other settings</summary>
+            <div style="padding: 16px 8px 0px 8px;">
+                <div class="verticalSection">
+
+                    <!-- follow device orientation goes here -->
+                    
+                    <div class="inputContainer">
+                        <label class="inputLabel" for="default-orientation-value">Default video orientation</label>
+                        <select id="default-orientation-value" data-key-name="defaultVideoOrientation" data-prop-name="value" is="emby-select" class="emby-select-withcolor emby-select"></select>
+                        <div class="fieldDescription">Lock orientation during video playback</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="default-orientation-locked" data-key-name="defaultVideoOrientation" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="safe-area-value" data-key-name="safeAreaInControlsEnabled" data-prop-name="value" type="checkbox" is="emby-checkbox"/>
+                            <span class="checkboxLabel">Safe Area in video controls</span>
+                        </label>
+                        <div class="fieldDescription">Enable the safe area around video controls</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="safe-area-locked" data-key-name="safeAreaInControlsEnabled" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="show-custom-menu-value" data-key-name="showCustomMenuLinks" data-prop-name="value" type="checkbox" is="emby-checkbox"/>
+                            <span class="checkboxLabel">Show custom menu links</span>
+                        </label>
+                        <div class="fieldDescription">Show custom menu links defined inside your web configuration</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="show-custom-menu-locked" data-key-name="showCustomMenuLinks" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                    <!-- default bit rate goes here -->
+                    
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="disable-haptics-value" data-key-name="disableHapticFeedback" data-prop-name="value" type="checkbox" is="emby-checkbox"/>
+                            <span>Disable haptic feedback</span>
+                        </label>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="disable-haptics-locked" data-key-name="disableHapticFeedback" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="hidden-libraries-value">Hidden libraries</label>
+                        <input id="hidden-libraries-value" data-key-name="hiddenLibraries" data-prop-name="value" data-is-array="true" is="emby-input"/>
+                        <div class="fieldDescription">Hide libraries from the library tab in streamyfin. Enter a comma-separated list of library ids to exclude.</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="hidden-libraries-locked" data-key-name="hiddenLibraries" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+        </details>
+
+        <details id="download-settings">
+            <summary>Download settings</summary>
+            <div style="padding: 16px 8px 0px 8px;">
+                <div class="verticalSection">
+
+                    <div class="inputContainer">
+                        <label class="inputLabel" for="download-method-value">Offline download method</label>
+                        <select id="download-method-value" data-key-name="downloadMethod" data-prop-name="value" is="emby-select" class="emby-select-withcolor emby-select"></select>
+                        <div class="fieldDescription">Enter the method you want your users to use when download media for offline usage</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="download-method-locked" data-key-name="downloadMethod" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel" for="remux-concurrent-limit-value">Remux concurrent limit</label>
+                        <select id="remux-concurrent-limit-value" data-key-name="remuxConcurrentLimit" data-prop-name="value" is="emby-select" class="emby-select-withcolor emby-select"></select>
+                        <div class="fieldDescription">Restrict the amount of downloads a device can do simultaneously</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="remux-concurrent-limit-locked" data-key-name="remuxConcurrentLimit" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="auto-download-value" data-key-name="autoDownload" data-prop-name="value" type="checkbox" is="emby-checkbox"/>
+                            <span class="checkboxLabel">Optimized auto download</span>
+                        </label>
+                        <div class="fieldDescription">Grant the ability to auto download in the background when using the optimized server</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="auto-download-locked" data-key-name="autoDownload" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="forward-skip-value">Optimized server url</label>
+                        <input id="optimized-server-value" data-key-name="optimizedVersionsServerUrl" data-prop-name="value" type="text" is="emby-input"/>
+                        <div class="fieldDescription">Enter the url for your optimized server</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="optimized-server-locked" data-key-name="optimizedVersionsServerUrl" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <details id="other-plugin-settings">
+            <summary>Other Plugin settings</summary>
+            <div style="padding: 16px 8px 0px 8px;">
+                <div class="verticalSection">
+                    
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="jellyseerr-server-value">Jellyseerr Server url</label>
+                        <input id="jellyseerr-server-value" data-key-name="jellyseerrServerUrl" data-prop-name="value" type="text" is="emby-input"/>
+                        <div class="fieldDescription">Enter the url for your jellyseerr server.<br><b>**Jellyfin authentication is required**</b></div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="jellyseerr-server-locked" data-key-name="jellyseerrServerUrl" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel" for="search-engine-value">Default search engine</label>
+                        <select id="search-engine-value" data-key-name="searchEngine" data-prop-name="value" is="emby-select" class="emby-select-withcolor emby-select"></select>
+                        <div class="fieldDescription">Enter the search engine you want to use in streamyfin</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="search-engine-locked" data-key-name="searchEngine" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="marlin-server-value">Marlin server url</label>
+                        <input id="marlin-server-value" data-key-name="marlinServerUrl" data-prop-name="value" type="text" is="emby-input"/>
+                        <div class="fieldDescription">Enter url for your marlin server</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="marlin-server-locked" data-key-name="marlinServerUrl" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+                    
+                </div>
+            </div>
+        </details>
+        
+        <div id="config-layout" style="margin-top: 24px;">
+            <button id="save-settings-btn" is="emby-button" type="submit" class="raised button-submit block">
+                <span>Save</span>
+            </button>
+        </div>
+    </div>
+</div>

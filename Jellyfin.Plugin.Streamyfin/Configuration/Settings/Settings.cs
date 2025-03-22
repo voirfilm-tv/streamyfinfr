@@ -156,6 +156,7 @@ public class Settings
     [NotNull]
     [Display(Name = "Subtitle playback mode", Description = "Setting to determine when subtitles will automatically play during video playback")]
     public Lockable<SubtitlePlaybackMode>? subtitleMode { get; set; }
+
     [NotNull]
     [Display(Name = "Remember subtitle selection", Description = "Allows you to set the subtitle language from the previous played item")]
     public Lockable<bool>? rememberSubtitleSelections { get; set; } // = true;
