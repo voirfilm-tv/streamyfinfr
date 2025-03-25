@@ -34,6 +34,9 @@ value: `application/json`
 key: `Authorization`<br>
 value: `MediaBrowser Token="{apiKey}"`
 
+**You can generate a jellyfin API Key by going to** 
+`Dashboard -> Advanced (bottom left) -> API Keys -> Click on (+) to genreate a key` 
+
 ## Template
 ```json
 [
