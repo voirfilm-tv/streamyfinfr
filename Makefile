@@ -22,7 +22,7 @@ create-gh-release:
 	gh release create ${VERSION} "./dist/${FILE}" --generate-notes --verify-tag
 
 update-version:
-	sed -i 's/\(.*\)<\(.*\)Version>\(.*\)<\/\(.*\)Version>/\1<\2Version>${VERSION}<\/\4Version>/g' $GITHUB_WORKSPACE/Jellyfin.Plugin.Streamyfin/Jellyfin.Plugin.Streamyfin.csproj
+	sed -i 's/\(.*\)<\(.*\)Version>\(.*\)<\/\(.*\)Version>/\1<\2Version>${VERSION}<\/\4Version>/g' /home/runner/work/jellyfin-plugin-streamyfin/jellyfin-plugin-streamyfin/Jellyfin.Plugin.Streamyfin/Jellyfin.Plugin.Streamyfin.csproj
   
 update-manifest:
 	node scripts/validate-and-update-manifest.js
