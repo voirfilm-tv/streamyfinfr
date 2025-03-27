@@ -13,12 +13,12 @@ export default function (view, params) {
     view.addEventListener('viewshow', (e) => {
         import("/web/configurationpage?name=shared.js").then((shared) => {
             shared.setPage("Other");
-            if (homePage.innerHTML === "") {
-                shared.StreamyfinTabs().forEach(tab => homePage.add(new Option(tab.name, tab.resource)))
-            }
+
+            homePage.options.length = 0;
+            shared.StreamyfinTabs().forEach(tab => homePage.add(new Option(tab.name, tab.resource)))
 
             homePage.value = shared.getConfig()?.other?.homePage;
-            
+
             shared.setOnConfigUpdatedListener('other', (config) => {
                 console.log("updating dom for other")
                 const {other} = config;

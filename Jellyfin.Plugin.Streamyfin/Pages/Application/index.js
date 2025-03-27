@@ -32,25 +32,20 @@ const setOptions = (schema) => {
 
     const {SubtitlePlaybackMode, OrientationLock, DownloadMethod, RemuxConcurrentLimit, SearchEngine} = schema.definitions;
 
-    if (subtitlePlaybackValue.innerHTML === "") {
-        SubtitlePlaybackMode.enum.forEach(value => subtitlePlaybackValue.add(createOption(value)));
-    }
+    subtitlePlaybackValue.options.length = 0;
+    SubtitlePlaybackMode.enum.forEach(value => subtitlePlaybackValue.add(createOption(value)));
+    
+    defaultOrientationValue.options.length = 0;
+    OrientationLock.enum.forEach(value => defaultOrientationValue.add(createOption(value)));
+    
+    downloadMethodValue.options.length = 0;
+    DownloadMethod.enum.forEach(value => downloadMethodValue.add(createOption(value)));
 
-    if (defaultOrientationValue.innerHTML === "") {
-        OrientationLock.enum.forEach(value => defaultOrientationValue.add(createOption(value)));
-    }
+    remuxConcurrentLimitValue.options.length = 0;
+    RemuxConcurrentLimit.enum.forEach(value => remuxConcurrentLimitValue.add(createOption(value)));
 
-    if (downloadMethodValue.innerHTML === "") {
-        DownloadMethod.enum.forEach(value => downloadMethodValue.add(createOption(value)));
-    }
-
-    if (remuxConcurrentLimitValue.innerHTML === "") {
-        RemuxConcurrentLimit.enum.forEach(value => remuxConcurrentLimitValue.add(createOption(value)));
-    }
-
-    if (searchEngineValue.innerHTML === "") {
-        SearchEngine.enum.forEach(value => searchEngineValue.add(createOption(value)));
-    }
+    searchEngineValue.options.length = 0;
+    SearchEngine.enum.forEach(value => searchEngineValue.add(createOption(value)));
 }
 
 const updateSettingConfig = (name, config, valueName, value) => ({
