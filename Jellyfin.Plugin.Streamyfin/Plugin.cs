@@ -119,6 +119,13 @@ public class StreamyfinPlugin : BasePlugin<PluginConfiguration>, IHasWebPages
                 }
             }
         }
+        else
+        {
+            foreach (var pluginPageInfo in _pages())
+            {
+                yield return pluginPageInfo;
+            }
+        }
 
         // region pages
 
