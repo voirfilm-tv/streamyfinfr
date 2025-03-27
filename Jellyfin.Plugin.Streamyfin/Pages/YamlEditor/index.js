@@ -1,6 +1,6 @@
-const yamlEditor = document.getElementById('yaml-editor');
-const exampleBtn = document.getElementById("example-btn")
-const saveBtn = document.getElementById("save-btn");
+const yamlEditor = () => document.getElementById('yaml-editor');
+const exampleBtn = () => document.getElementById("example-btn")
+const saveBtn = () => document.getElementById("save-btn");
 
 export default function (view, params) {
 
@@ -11,11 +11,14 @@ export default function (view, params) {
             return shared;
         }).then(async (shared) => {
             // Import monaco after shared resources and wait until its done before continuing
-            if (!window.monaco) Dashboard.showLoadingMsg();
-            await import("/web/configurationpage?name=monaco-editor.bundle.js")
+            if (!window.monaco) {
+                Dashboard.showLoadingMsg();
+                await import("/web/configurationpage?name=monaco-editor.bundle.js")
+            }
 
             const Page = {
                 editor: null,
+                yaml: null,
                 saveConfig: function (e) {
                     e.preventDefault();
                     shared.setYamlConfig(Page.editor.getModel().getValue())
@@ -25,7 +28,7 @@ export default function (view, params) {
                     Dashboard.hideLoadingMsg();
                     const yamlModelUri = monaco.Uri.parse('streamyfin.yaml');
 
-                    Page.editor = monaco.editor.create(yamlEditor, {
+                    Page.editor = monaco.editor.create(yamlEditor(), {
                         automaticLayout: true,
                         language: 'yaml',
                         suggest: {
@@ -53,7 +56,9 @@ export default function (view, params) {
 
                     // Yaml Editor
                     monaco.editor.setTheme('vs-dark');
-                    monacoYaml.configureMonacoYaml(monaco, {
+                    
+                    
+                    Page.yaml = monacoYaml.configureMonacoYaml(monaco, {
                         enableSchemaRequest: true,
                         hover: true,
                         completion: true,
@@ -68,8 +73,8 @@ export default function (view, params) {
                         ],
                     });
 
-                    saveBtn.addEventListener("click", Page.saveConfig);
-                    exampleBtn.addEventListener("click", Page.resetConfig);
+                    saveBtn().addEventListener("click", Page.saveConfig);
+                    exampleBtn().addEventListener("click", Page.resetConfig);
 
                     if (shared.getConfig() && Page.editor == null) {
                         Page.loadConfig(shared.getConfig());
@@ -87,19 +92,21 @@ export default function (view, params) {
                 }
             };
 
-            if (!Page.editor && monaco.editor.getModels().length == 0) {
+            if (!Page.editor && monaco?.editor?.getModels?.()?.length === 0) {
                 Page.init();
             } else {
                 console.log("Monaco editor model already exists")
             }
+
+            view.addEventListener('viewhide', function (e) {
+                console.log("Hiding")
+                Page?.editor?.dispose()
+                Page?.yaml?.dispose()
+                Page.editor = undefined;
+                Page.yaml = undefined;
+                monaco?.editor?.getModels?.()?.forEach(model => model.dispose())
+                monaco?.editor?.getEditors?.()?.forEach(editor => editor.dispose());
+            });
         })
     });
-
-    // todo: figure out why monaco doesnt re-init when being hidden at times
-    // view.addEventListener('viewhide', function (e) {
-    //     const models = monaco?.editor?.getModels?.();
-    //     if (models?.length && models.length != 0) {
-    //         models.forEach(model => model.dispose())
-    //     }
-    // });
 }

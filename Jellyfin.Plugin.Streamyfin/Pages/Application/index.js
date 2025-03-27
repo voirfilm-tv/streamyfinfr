@@ -1,10 +1,10 @@
-const subtitlePlaybackValue = document.getElementById('subtitle-playback-value');
-const defaultOrientationValue = document.getElementById('default-orientation-value');
-const downloadMethodValue = document.getElementById('download-method-value');
-const remuxConcurrentLimitValue = document.getElementById('remux-concurrent-limit-value');
-const searchEngineValue = document.getElementById('search-engine-value');
+const subtitlePlaybackValue = () => document.getElementById('subtitle-playback-value');
+const defaultOrientationValue = () => document.getElementById('default-orientation-value');
+const downloadMethodValue = () => document.getElementById('download-method-value');
+const remuxConcurrentLimitValue = () => document.getElementById('remux-concurrent-limit-value');
+const searchEngineValue = () => document.getElementById('search-engine-value');
 
-const saveBtn = document.getElementById('save-settings-btn');
+const saveBtn = () => document.getElementById('save-settings-btn');
 
 // region helpers
 const getValues = () => ({
@@ -32,20 +32,20 @@ const setOptions = (schema) => {
 
     const {SubtitlePlaybackMode, OrientationLock, DownloadMethod, RemuxConcurrentLimit, SearchEngine} = schema.definitions;
 
-    subtitlePlaybackValue.options.length = 0;
-    SubtitlePlaybackMode.enum.forEach(value => subtitlePlaybackValue.add(createOption(value)));
+    subtitlePlaybackValue().options.length = 0;
+    SubtitlePlaybackMode.enum.forEach(value => subtitlePlaybackValue().add(createOption(value)));
     
-    defaultOrientationValue.options.length = 0;
-    OrientationLock.enum.forEach(value => defaultOrientationValue.add(createOption(value)));
+    defaultOrientationValue().options.length = 0;
+    OrientationLock.enum.forEach(value => defaultOrientationValue().add(createOption(value)));
     
-    downloadMethodValue.options.length = 0;
-    DownloadMethod.enum.forEach(value => downloadMethodValue.add(createOption(value)));
+    downloadMethodValue().options.length = 0;
+    DownloadMethod.enum.forEach(value => downloadMethodValue().add(createOption(value)));
 
-    remuxConcurrentLimitValue.options.length = 0;
-    RemuxConcurrentLimit.enum.forEach(value => remuxConcurrentLimitValue.add(createOption(value)));
+    remuxConcurrentLimitValue().options.length = 0;
+    RemuxConcurrentLimit.enum.forEach(value => remuxConcurrentLimitValue().add(createOption(value)));
 
-    searchEngineValue.options.length = 0;
-    SearchEngine.enum.forEach(value => searchEngineValue.add(createOption(value)));
+    searchEngineValue().options.length = 0;
+    SearchEngine.enum.forEach(value => searchEngineValue().add(createOption(value)));
 }
 
 const updateSettingConfig = (name, config, valueName, value) => ({
@@ -89,7 +89,7 @@ export default function (view, params) {
                 })
             })
 
-            shared.keyedEventListener(saveBtn, 'click', function () {
+            shared.keyedEventListener(saveBtn(), 'click', function () {
                 e.preventDefault();
                 const config = shared.getConfig();
 
