@@ -116,6 +116,14 @@ public class PluginConfiguration : BasePluginConfiguration
               }
           },
           new() {
+            title = "Latest",
+            orientation = SectionOrientation.horizontal,
+            latest = new()
+              {
+                limit = 25,
+              }
+          },
+          new() {
               title = "Favorites",
               orientation = SectionOrientation.vertical,
               items = new()
