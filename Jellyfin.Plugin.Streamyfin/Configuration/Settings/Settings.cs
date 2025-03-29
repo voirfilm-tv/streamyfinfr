@@ -58,7 +58,10 @@ public class Section
   [NotNull]
   [Display(Name = "Next up", Description = "Customize the Tv Shows Next Up API query")]
   public NextUp? nextUp { get; set; }
-//   public SectionSuggestions? suggestions { get; set; } = null;
+
+  [NotNull]
+  [Display(Name = "Latest", Description = "Customize the Latest API query")]
+  public Latest? latest { get; set; }
 }
 
 public enum SectionOrientation
@@ -110,9 +113,25 @@ public class NextUp
   
   [Display(Name = "Enable rewatching")]
   public bool? enableRewatching { get; set; }
+}
+
+public class Latest
+{
+  [Display(Name = "Parent id")]
+  public string? parentId { get; set; }
   
-  //[Display(Name = "Starting date of shows to show in Next Up section")]
-  //public bool? nextUpDateCutoff { get; set; }
+  [Display(Name = "Page limit")]
+  public int? limit { get; set; }
+  
+  [Display(Name = "Group items")]
+  public bool? groupItems { get; set; }
+    
+  [Display(Name = "Is played")]
+  public bool? isPlayed { get; set; }
+
+  [Display(Name = "Include item types")]
+  public BaseItemKind[]? includeItemTypes { get; set; }
+  
 }
 
 public class SectionSuggestions
