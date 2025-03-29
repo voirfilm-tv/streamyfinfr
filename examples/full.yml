@@ -83,6 +83,11 @@ settings:
             - Series
             - Movie
             limit: 25
+        # latest is can group episodes. Which items cannot do.
+        - title: Latest
+          orientation: horizontal
+          latest:
+            limit: 25
         - title: Favorites
           orientation: vertical
           items:
