@@ -103,7 +103,7 @@ settings:
             limit: 25
         # It's possible to filter by collection. 
         # Checkout https://github.com/lostb1t/jellyfin-plugin-collection-import to create collections from external lists
-        - title: My collection:
+        - title: My collection
           items:
             # parentID is the collection id. You can find it in the url on the web collection page
             parentId: ab7b2bcacafa97a2ad7d72d86eb1b408
