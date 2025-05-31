@@ -13,7 +13,6 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Namotion.Reflection;
 
 namespace Jellyfin.Plugin.Streamyfin.PushNotifications.Events;
 
@@ -87,9 +86,16 @@ public class ItemAddedService : BaseEvent, IHostedService
         var total = countdown?.Episodes.Count ?? 0;
 
         if (countdown == null || countdown.Episodes.Count == 0) return;
-
+        
         var episode = countdown.Episodes.First();
-        var name = episode.Series.Name.Escape();
+        var refreshedSeason = _libraryManager.GetItemById(seasonId) as Season;
+
+        if (refreshedSeason is null)
+        {
+            return;
+        }
+        
+        var name = refreshedSeason.Series.Name.Escape();
 
         string title;
         List<string> body = [];
@@ -99,6 +105,13 @@ public class ItemAddedService : BaseEvent, IHostedService
 
         if (total == 1)
         {
+            var refreshedEpisode = _libraryManager.GetItemById(episode.Id) as Episode;
+            if (refreshedEpisode is null)
+            {
+                return;
+            }
+            episode = refreshedEpisode;
+
             title = _localization.GetString("EpisodeAddedTitle");
             data["id"] = episode.Id; // only provide for a single episode notification
 
@@ -137,11 +150,11 @@ public class ItemAddedService : BaseEvent, IHostedService
         {
             title = _localization.GetString("EpisodesAddedTitle");
 
-            if (episode.Season.IndexNumber != null)
+            if (refreshedSeason.IndexNumber != null)
             {
                 body.Add(_localization.GetFormatted(
                         key: "TotalEpisodesAddedForSeason",
-                        args: [name, total, episode.Season.IndexNumber]
+                        args: [name, total, refreshedSeason.IndexNumber]
                     )
                 );
             }
@@ -155,8 +168,8 @@ public class ItemAddedService : BaseEvent, IHostedService
             }
         }
 
-        data["seasonIndex"] = episode.Season?.IndexNumber;
-        data["seriesId"] = episode.SeriesId;
+        data["seasonIndex"] = refreshedSeason.IndexNumber;
+        data["seriesId"] = refreshedSeason.SeriesId;
         data["type"] = episode.GetType().Name.Escape();
 
         var notification = new ExpoNotificationRequest
