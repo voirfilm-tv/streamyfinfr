@@ -13,6 +13,7 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Namotion.Reflection;
 
 namespace Jellyfin.Plugin.Streamyfin.PushNotifications.Events;
 
@@ -57,7 +58,13 @@ public class ItemAddedService : BaseEvent, IHostedService
                 }
                 break;
             case Episode episode:
-                var seasonId = episode.SeasonId;
+                var seasonId = episode.FindSeasonId();
+
+                if (seasonId == Guid.Empty)
+                {
+                    return;
+                }
+
                 _seasonItems.TryGetValue(seasonId, out var _countdown);
 
                 var countdown = _countdown ?? new EpisodeTimer(
