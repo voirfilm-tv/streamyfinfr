@@ -9,7 +9,7 @@ namespace Jellyfin.Plugin.Streamyfin.Tests;
 /// </summary>
 public class LocalizationTests
 {
-    private LocalizationHelper _helper = new();
+    private LocalizationHelper _helper = new(null, null);
     
     /// <summary>
     /// Test to make sure fallback is english resource
