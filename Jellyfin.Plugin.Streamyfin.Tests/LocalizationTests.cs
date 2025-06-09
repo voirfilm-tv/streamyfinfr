@@ -45,5 +45,14 @@ public class LocalizationTests
             expected: "Test watching",
             actual: _helper.GetFormatted("UserWatching", args: "Test")
         );
+
+        Assert.Equal(
+            expected: "Test empezaron a mirar",
+            actual: _helper.GetFormatted(
+                key: "UserWatching",
+                cultureInfo: CultureInfo.CreateSpecificCulture("es-MX"),
+                args: "Test"
+            )
+        );
     }
 }

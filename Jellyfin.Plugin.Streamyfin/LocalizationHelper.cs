@@ -21,7 +21,11 @@ public class LocalizationHelper
         ILoggerFactory? loggerFactory,
         IServerConfigurationManager? serverConfig)
     {
-        _logger = loggerFactory?.CreateLogger<LocalizationHelper>();
+        if (loggerFactory != null)
+        {
+            _logger = loggerFactory.CreateLogger<LocalizationHelper>();
+        }
+
         _serverConfig = serverConfig;
         _resourceManager = new ResourceManager(
             baseName: "Jellyfin.Plugin.Streamyfin.Resources.Strings",
