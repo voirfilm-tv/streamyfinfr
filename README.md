@@ -24,7 +24,7 @@ With this plugin you allow the streamyfin application to do the following for al
   </thead>
   <tbody>
     <tr>
-      <td valign="top"><img src="./assets/Jellyseerr.png"/></td>
+      <td valign="top"><img src="./assets/jellyseerr.png"/></td>
       <td valign="top"><img src="./assets/home.jpg"/></td>
       <td valign="top"><img src="./assets/notifications.png"/></td>
     </tr>
