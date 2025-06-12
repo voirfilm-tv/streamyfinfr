@@ -43,6 +43,7 @@ rm -rf ./dist/
 mkdir ./dist/
 
 cp ./packages/* ./dist/
+find Jellyfin.Plugin.Streamyfin/bin/$CONFIGURATION/net8.0 -type d -not -path "Jellyfin.Plugin.Streamyfin/bin/$CONFIGURATION/net8.0" -exec cp -R {} ./dist/ \;
 cp ./Jellyfin.Plugin.Streamyfin/bin/$CONFIGURATION/net8.0/Jellyfin.Plugin.Streamyfin.dll ./dist/
 
 if [ "$REMOTE" = "true" ]; then
