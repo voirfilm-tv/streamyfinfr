@@ -1,6 +1,7 @@
 const subtitlePlaybackValue = () => document.getElementById('subtitle-playback-value');
 const defaultOrientationValue = () => document.getElementById('default-orientation-value');
 const downloadMethodValue = () => document.getElementById('download-method-value');
+const defaultBitRateValue = () => document.getElementById('default-bitrate-value');
 const remuxConcurrentLimitValue = () => document.getElementById('remux-concurrent-limit-value');
 const searchEngineValue = () => document.getElementById('search-engine-value');
 
@@ -26,11 +27,18 @@ const getValues = () => ({
     }, {})
 })
 
-const createOption = (value) => new Option(value, value)
+const createOption = (value, title = null) => new Option(title ?? value, value)
 const setOptions = (schema) => {
     if (!schema) return;
 
-    const {SubtitlePlaybackMode, OrientationLock, DownloadMethod, RemuxConcurrentLimit, SearchEngine} = schema.definitions;
+    const {
+        SubtitlePlaybackMode, 
+        OrientationLock, 
+        DownloadMethod, 
+        RemuxConcurrentLimit, 
+        SearchEngine, 
+        Bitrate
+    } = schema.definitions;
 
     subtitlePlaybackValue().options.length = 0;
     SubtitlePlaybackMode.enum.forEach(value => subtitlePlaybackValue().add(createOption(value)));
@@ -40,6 +48,10 @@ const setOptions = (schema) => {
     
     downloadMethodValue().options.length = 0;
     DownloadMethod.enum.forEach(value => downloadMethodValue().add(createOption(value)));
+
+    defaultBitRateValue().options.length = 0;
+    defaultBitRateValue().add(new Option("Max", 'null'))
+    Bitrate.enum.forEach(value => defaultBitRateValue().add(createOption(value, value.replaceAll("_", ""))));
 
     remuxConcurrentLimitValue().options.length = 0;
     RemuxConcurrentLimit.enum.forEach(value => remuxConcurrentLimitValue().add(createOption(value)));

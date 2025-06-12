@@ -98,6 +98,10 @@ public class SerializationTests(ITestOutputHelper output)
                         "locked": true,
                         "value": "LandscapeLeft"
                     },
+                    "defaultBitrate": {
+                        "locked": true,
+                        "value": 250000
+                    },
                     "downloadMethod": {
                         "locked": true,
                         "value": "remux"
@@ -133,6 +137,9 @@ public class SerializationTests(ITestOutputHelper output)
                 remuxConcurrentLimit:
                     locked: true
                     value: Two
+                defaultBitrate:
+                    locked: true
+                    value: _250KB
             """
         );
     }
@@ -156,6 +163,10 @@ public class SerializationTests(ITestOutputHelper output)
                 "defaultVideoOrientation": {
                   "locked": false,
                   "value": 6
+                },
+                "defaultBitrate": {
+                  "locked": false,
+                  "value": 250000
                 },
                 "downloadMethod": {
                   "locked": false,
@@ -188,6 +199,9 @@ public class SerializationTests(ITestOutputHelper output)
               defaultVideoOrientation:
                 locked: false
                 value: LandscapeLeft
+              defaultBitrate:
+                locked: false
+                value: _250KB
               downloadMethod:
                 locked: false
                 value: remux
@@ -253,6 +267,10 @@ public class SerializationTests(ITestOutputHelper output)
                 remuxConcurrentLimit = new Lockable<RemuxConcurrentLimit>
                 {
                     value = RemuxConcurrentLimit.Two
+                },
+                defaultBitrate = new Lockable<Bitrate?>
+                {
+                    value = Bitrate._250KB
                 }
             }
         };
@@ -285,6 +303,10 @@ public class SerializationTests(ITestOutputHelper output)
         Assert.Assrt(
             $"RemuxConcurrentLimit matches: {RemuxConcurrentLimit.One} == {config.settings?.remuxConcurrentLimit?.value}",
             RemuxConcurrentLimit.Two == config.settings?.remuxConcurrentLimit?.value
+        );
+        Assert.Assrt(
+            $"Bitrate matches: {Bitrate._250KB} == {config.settings?.defaultBitrate?.value}",
+            Bitrate._250KB == config.settings?.defaultBitrate?.value
         );
     }
 }

@@ -102,7 +102,7 @@ export const getElValue = (el) => {
         value = value.split(',').map(v => v.trim());
     }
 
-    if (value === '') {
+    if (value === '' || value === 'null') {
         value = null
     }
 

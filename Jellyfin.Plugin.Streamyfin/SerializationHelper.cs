@@ -52,6 +52,7 @@ public class SerializationHelper
         options.Converters.Insert(0, new JsonNumberEnumConverter<SubtitlePlaybackMode>());
         options.Converters.Insert(0, new JsonNumberEnumConverter<OrientationLock>());
         options.Converters.Insert(0, new JsonNumberEnumConverter<RemuxConcurrentLimit>());
+        options.Converters.Insert(0, new JsonNumberEnumConverter<Bitrate>());
 
 #if DEBUG
         options.WriteIndented = true;
