@@ -10,7 +10,7 @@ k: zip
 zip:
 	mkdir -p ./dist
 	zip -r -j "./dist/${FILE}" Jellyfin.Plugin.Streamyfin/bin/Release/net8.0/Jellyfin.Plugin.Streamyfin.dll packages/
-	cd Jellyfin.Plugin.Streamyfin/bin/Release/net8.0/ && find ./ -type d -not -path '.' -print | zip -ur "${GITHUB_WORKSPACE}/dist/${FILE}" -@
+	cd Jellyfin.Plugin.Streamyfin/bin/Release/net8.0/ && find . -type d -not -path '.' -print | zip -ur "${GITHUB_WORKSPACE}/dist/${FILE}" -@
 
 csum:
 	md5sum "./dist/${FILE}"
