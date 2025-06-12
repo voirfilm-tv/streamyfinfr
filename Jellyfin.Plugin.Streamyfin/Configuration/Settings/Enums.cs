@@ -86,3 +86,13 @@ public enum RemuxConcurrentLimit
     Three = 3,
     Four = 4,
 }
+
+public enum Bitrate
+{
+    _250KB = 250000,
+    _500KB = 500000,
+    _1MB = 1000000,
+    _2MB = 2000000,
+    _4MB = 4000000,
+    _8MB = 8000000,
+};

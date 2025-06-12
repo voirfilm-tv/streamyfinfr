@@ -209,6 +209,10 @@ public class Settings
     [Display(Name = "Disable haptic feedback")]
     public Lockable<bool>? disableHapticFeedback { get; set; } // = false;
 
+    [NotNull]
+    [Display(Name = "Default playback quality")]
+    public Lockable<Bitrate?>? defaultBitrate { get; set; } // = null/MAX;
+
     // Downloads
     [NotNull]
     [Display(Name = "Offline download method", Description = "Enter the method you want your users to use when download media for offline usage")]

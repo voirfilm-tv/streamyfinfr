@@ -73,6 +73,7 @@ public class PluginConfiguration : BasePluginConfiguration
     showCustomMenuLinks = new() { value = false },
     hiddenLibraries = new() { value = new[] { "Enter library id(s)" } },
     disableHapticFeedback = new() { value = false },
+    defaultBitrate = new() { value = null },
     downloadMethod = new() { value = DownloadMethod.remux },
     remuxConcurrentLimit = new() { value = RemuxConcurrentLimit.One },
     autoDownload = new() { value = false },

@@ -193,8 +193,19 @@
                         </label>
                     </div>
 
-                    <!-- default bit rate goes here -->
-                    
+                    <div class="inputContainer">
+                        <label class="inputLabel" for="remux-concurrent-limit-value">Default playback bitrate</label>
+                        <select id="default-bitrate-value" data-key-name="defaultBitrate" data-prop-name="value" is="emby-select" class="emby-select-withcolor emby-select"></select>
+                        <div class="fieldDescription">The default bitrate at which your media streams at</div>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label class="emby-checkbox-label">
+                            <input id="default-bitrate-locked" data-key-name="defaultBitrate" data-prop-name="locked" type="checkbox" is="emby-checkbox"/>
+                            <span>Locked</span>
+                        </label>
+                    </div>
+
                     <div class="checkboxContainer">
                         <label class="emby-checkbox-label">
                             <input id="disable-haptics-value" data-key-name="disableHapticFeedback" data-prop-name="value" type="checkbox" is="emby-checkbox"/>
