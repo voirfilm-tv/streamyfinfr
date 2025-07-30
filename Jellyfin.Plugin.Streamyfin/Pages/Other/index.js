@@ -11,7 +11,7 @@ export default function (view, params) {
 
     // init code here
     view.addEventListener('viewshow', (e) => {
-        import("/web/configurationpage?name=shared.js").then((shared) => {
+        import(window.ApiClient.getUrl("web/configurationpage?name=shared.js")).then((shared) => {
             shared.setPage("Other");
 
             homePage().options.length = 0;
