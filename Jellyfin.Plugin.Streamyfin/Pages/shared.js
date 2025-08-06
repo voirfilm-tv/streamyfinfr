@@ -162,7 +162,7 @@ export const StreamyfinTabs = () => [
 // region on Shared init
 if (!window.Streamyfin?.shared) {
     // import json-yaml library
-    import("/web/configurationpage?name=js-yaml.js").then((jsYaml) => {
+    import(window.ApiClient.getUrl("web/configurationpage?name=js-yaml.js")).then((jsYaml) => {
         tools.jsYaml = jsYaml;
         
         //fetch default configuration

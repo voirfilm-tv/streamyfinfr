@@ -6,14 +6,14 @@ export default function (view, params) {
 
     // init code here
     view.addEventListener('viewshow', (e) => {
-        import("/web/configurationpage?name=shared.js").then((shared) => {
+        import(window.ApiClient.getUrl("web/configurationpage?name=shared.js")).then((shared) => {
             shared.setPage("Yaml");
             return shared;
         }).then(async (shared) => {
             // Import monaco after shared resources and wait until its done before continuing
             if (!window.monaco) {
                 Dashboard.showLoadingMsg();
-                await import("/web/configurationpage?name=monaco-editor.bundle.js")
+                await import(window.ApiClient.getUrl('web/configurationpage?name=monaco-editor.bundle.js'))
             }
 
             const Page = {
