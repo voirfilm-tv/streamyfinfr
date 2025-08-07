@@ -19,6 +19,13 @@ public class NotificationConfiguration
     public double? RecentEventThreshold { get; set; }
 }
 
+public class ItemAddedNotificationConfiguration: NotificationConfiguration
+{
+    [Display(Name = "Enabled libraries", Description = "Enter all library Ids you want to receive notifications from")]
+    [JsonPropertyName(name: "enabledLibraries")]
+    public string[] EnabledLibraries { get; set; }
+}
+
 public class UserNotificationConfig : NotificationConfiguration
 {
     [Display(Name = "Jellyfin User Ids", Description = "List of jellyfin user ids that this notification is for.")]
@@ -54,5 +61,5 @@ public class Notifications
     [NotNull]
     [Display(Name = "Item added", Description = "Get notified when jellyfin adds new Movies or Episodes")]
     [JsonPropertyName(name: "itemAdded")]
-    public NotificationConfiguration? ItemAdded { get; set; }
+    public ItemAddedNotificationConfiguration? ItemAdded { get; set; }
 }

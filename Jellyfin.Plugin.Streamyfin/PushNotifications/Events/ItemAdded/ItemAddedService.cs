@@ -8,7 +8,6 @@ using Jellyfin.Plugin.Streamyfin.Extensions;
 using Jellyfin.Plugin.Streamyfin.PushNotifications.Events.ItemAdded;
 using Jellyfin.Plugin.Streamyfin.PushNotifications.models;
 using MediaBrowser.Controller;
-using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
@@ -43,6 +42,23 @@ public class ItemAddedService : BaseEvent, IHostedService
         ) return;
 
         var item = itemChangeEventArgs.Item;
+        var enabledLibraries = Config.notifications.ItemAdded.EnabledLibraries;
+        var virtualFolder = _libraryManager.GetVirtualFolders()
+            .Find(folder => folder.Locations.Any(location => item?.Path?.Contains(location) == true));
+
+        if (
+            virtualFolder != null &&
+            enabledLibraries.Length > 0 &&
+            !enabledLibraries.Contains(virtualFolder.ItemId)
+        )
+        {
+            _logger.LogInformation(
+                "Failed to notify about item {0} - {1}. Library {2} currently not enabled for notifications.",
+                item.GetType().Name, item.Name.Escape(), virtualFolder.Name
+            );
+            return;
+        }
+
         _logger.LogInformation("Item added is {0} - {1}",  item.GetType().Name, item.Name.Escape());
 
         switch (item)
