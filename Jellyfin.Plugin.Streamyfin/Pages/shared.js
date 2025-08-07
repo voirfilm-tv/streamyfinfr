@@ -162,7 +162,7 @@ export const StreamyfinTabs = () => [
 // region on Shared init
 if (!window.Streamyfin?.shared) {
     // import json-yaml library
-    import(window.ApiClient.getUrl("web/configurationpage?name=js-yaml.js")).then((jsYaml) => {
+    await import(window.ApiClient.getUrl("web/configurationpage?name=js-yaml.js")).then(async (jsYaml) => {
         tools.jsYaml = jsYaml;
         
         //fetch default configuration
@@ -175,13 +175,14 @@ if (!window.Streamyfin?.shared) {
 
         // fetch schema
         // We want to define any pages first before setting any values
-        fetch(SCHEMA_URL)
+        await fetch(SCHEMA_URL)
             .then(async (response) => setSchema(await response.json()))
-            .then(() => {
+            .then(async () => {
 
                 // fetch configuration
-                window.ApiClient.ajax({type: 'GET', url: YAML_URL, contentType: 'application/json'})
+                await window.ApiClient.ajax({type: 'GET', url: YAML_URL, contentType: 'application/json'})
                     .then(async function (response) {
+                        console.log("Getting actual config")
                         const {Value} = await response.json();
                         setYamlConfig(Value)
                     })
