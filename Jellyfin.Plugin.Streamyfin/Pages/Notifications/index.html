@@ -41,6 +41,13 @@
                     This notification consolidates the amount of episodes added for a season into one notification if possible to prevent spam.
                 </div>
             </div>
+            <p>Enabled Libraries</p>
+            <div class="fieldDescription">
+                Restrict notifications to specific libraries or leave <strong>ALL</strong> unchecked to provide no restriction.
+            </div>
+            <input id="hidden-library-input" type="hidden" data-key-name="itemAdded" data-prop-name="enabledLibraries" data-is-array="true"/>
+            <div id="item-library-container" class="checkboxContainer checkboxContainer-withDescription" style="margin-top: 16px">
+            </div>
             <div class="inputContainer">
                 <label class="inputLabel inputLabelUnfocused" for="item-added-threshold">Recent Event Threshold</label>
                 <input id="item-added-threshold" data-key-name="itemAdded" data-prop-name="recentEventThreshold" min="0" type="number" is="emby-input">
