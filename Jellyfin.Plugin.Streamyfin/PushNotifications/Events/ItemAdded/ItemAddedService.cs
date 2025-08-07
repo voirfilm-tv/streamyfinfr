@@ -8,6 +8,7 @@ using Jellyfin.Plugin.Streamyfin.Extensions;
 using Jellyfin.Plugin.Streamyfin.PushNotifications.Events.ItemAdded;
 using Jellyfin.Plugin.Streamyfin.PushNotifications.models;
 using MediaBrowser.Controller;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
@@ -35,8 +36,11 @@ public class ItemAddedService : BaseEvent, IHostedService
 
     private void ItemAddedHandler(object? sender, ItemChangeEventArgs itemChangeEventArgs)
     {
-        if (itemChangeEventArgs.Item.IsVirtualItem ||  Config?.notifications?.ItemAdded is not { Enabled: true }) 
-            return;
+        if (
+            itemChangeEventArgs.Item.IsVirtualItem || 
+            itemChangeEventArgs.Item.IsFolder || 
+            Config?.notifications?.ItemAdded is not { Enabled: true }
+        ) return;
 
         var item = itemChangeEventArgs.Item;
         _logger.LogInformation("Item added is {0} - {1}",  item.GetType().Name, item.Name.Escape());
